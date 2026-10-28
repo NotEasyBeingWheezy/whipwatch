@@ -1,4 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { SiteNav } from "@/components/site-nav";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -20,6 +21,9 @@ function About() {
     <main className="min-h-screen bg-background text-foreground">
       <header className="border-b-4 border-primary">
         <div className="mx-auto max-w-3xl px-6 py-12">
+          <div className="mb-6">
+            <SiteNav />
+          </div>
           <p className="font-mono text-xs uppercase tracking-[0.3em] text-primary">About</p>
           <h1 className="mt-3 font-display text-6xl leading-none">WhipWatch</h1>
         </div>
@@ -90,11 +94,6 @@ function About() {
           </p>
         </div>
 
-        <div>
-          <Link to="/" className="inline-flex items-center bg-primary px-4 py-2 font-mono text-xs uppercase text-primary-foreground transition-colors hover:bg-primary/90">
-            ← Back to the records
-          </Link>
-        </div>
       </section>
     </main>
   );
