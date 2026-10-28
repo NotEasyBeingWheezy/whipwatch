@@ -20,6 +20,9 @@ function About() {
     <main className="min-h-screen bg-background text-foreground">
       <header className="border-b-4 border-primary">
         <div className="mx-auto max-w-3xl px-6 py-12">
+          <div className="mb-6">
+            <SiteNav />
+          </div>
           <p className="font-mono text-xs uppercase tracking-[0.3em] text-primary">About</p>
           <h1 className="mt-3 font-display text-6xl leading-none">WhipWatch</h1>
         </div>

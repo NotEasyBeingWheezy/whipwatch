@@ -39,10 +39,9 @@ function Index() {
     <main className="min-h-screen bg-background text-foreground">
       <header className="border-b-4 border-primary">
         <div className="mx-auto max-w-6xl px-6 py-12">
-          <nav className="mb-6 flex gap-6 font-mono text-xs uppercase tracking-widest">
-            <span className="border-b-2 border-primary pb-1 text-primary">Records</span>
-            <Link to="/about" className="pb-1 text-muted-foreground transition-colors hover:text-foreground">About</Link>
-          </nav>
+          <div className="mb-6">
+            <SiteNav />
+          </div>
           <p className="font-mono text-xs uppercase tracking-[0.3em] text-primary">House of Commons · since 1979</p>
           <h1 className="mt-3 font-display text-6xl md:text-8xl leading-none">WhipWatch</h1>
           <p className="mt-4 max-w-xl text-muted-foreground">
