@@ -1,0 +1,122 @@
+[
+  {
+    "parliament": "",
+    "date": "1902-11-01",
+    "member": "John Wason",
+    "whip": "",
+    "constituency": "Orkney & Shetland",
+    "before": "Liberal Unionist",
+    "after": "Ind Liberal",
+    "notes": "Won by-election in November 1902",
+    "older": true,
+    "datePrecision": "month"
+  },
+  {
+    "parliament": "",
+    "date": "1904-03-01",
+    "member": "John Seely",
+    "whip": "",
+    "constituency": "Isle of Wight",
+    "before": "Con",
+    "after": "Ind",
+    "notes": "Won by-election in April 1904 unopposed",
+    "older": true,
+    "datePrecision": "month"
+  },
+  {
+    "parliament": "",
+    "date": "1904-11-01",
+    "member": "Richard Rigg",
+    "whip": "",
+    "constituency": "Appleby",
+    "before": "Liberal",
+    "after": "Ind",
+    "notes": "Resigned Dec 1904 but did not contest by-election",
+    "older": true,
+    "datePrecision": "month"
+  },
+  {
+    "parliament": "",
+    "date": "1909-03-01",
+    "member": "Thomas Kincaid-Smith",
+    "whip": "",
+    "constituency": "Stratford-on-Avon",
+    "before": "Liberal",
+    "after": "Ind",
+    "notes": "Lost by-election in May 1909",
+    "older": true,
+    "datePrecision": "month"
+  },
+  {
+    "parliament": "",
+    "date": "1926-10-01",
+    "member": "Joseph  Kenworthy",
+    "whip": "",
+    "constituency": "Hull Central",
+    "before": "Liberal",
+    "after": "Lab",
+    "notes": "Won by-election in November 1926",
+    "older": true,
+    "datePrecision": "month"
+  },
+  {
+    "parliament": "",
+    "date": "1927-02-01",
+    "member": "Leslie Haden-Guest",
+    "whip": "",
+    "constituency": "Southwark North",
+    "before": "Lab",
+    "after": "Ind",
+    "notes": "Lost by-election in March 1927",
+    "older": true,
+    "datePrecision": "month"
+  },
+  {
+    "parliament": "",
+    "date": "1929-06-01",
+    "member": "Sir William  Jowitt",
+    "whip": "",
+    "constituency": "Preston",
+    "before": "Liberal",
+    "after": "Lab",
+    "notes": "Won by-election in July 1929",
+    "older": true,
+    "datePrecision": "month"
+  },
+  {
+    "parliament": "",
+    "date": "1938-04-01",
+    "member": "Duchess of Atholl",
+    "whip": "",
+    "constituency": "Kinross and West Perth",
+    "before": "Con",
+    "after": "Ind",
+    "notes": "Lost by-election in December 1938",
+    "older": true,
+    "datePrecision": "month"
+  },
+  {
+    "parliament": "1951-1955",
+    "date": "1955-03-01",
+    "member": "Sir Richard Acland",
+    "whip": "",
+    "constituency": "Gravesend",
+    "before": "Lab",
+    "after": "Ind",
+    "notes": "Resigned seat to fight by-election; expelled from party. Parliament dissolved before by-election; unsuccessfully contested the seat at the GE in May 1955",
+    "older": true,
+    "datePrecision": "month"
+  },
+  {
+    "parliament": "1970-1974",
+    "date": "1972-10-01",
+    "member": "Dick Taverne #",
+    "whip": "",
+    "constituency": "Lincoln",
+    "before": "Lab",
+    "after": "Dem Lab",
+    "notes": "Won by-election in Mar 1973; re-elected in Feb 1974",
+    "older": true,
+    "datePrecision": "month"
+  }
+]
