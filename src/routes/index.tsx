@@ -1,4 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { SiteNav } from "@/components/site-nav";
 import { useMemo, useState } from "react";
 import raw from "@/data/changes.json";
 
