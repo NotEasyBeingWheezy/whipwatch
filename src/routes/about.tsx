@@ -34,7 +34,8 @@ function About() {
           <h2 className="font-display text-2xl">What this is</h2>
           <p className="text-muted-foreground">
             WhipWatch is a record of every Member of Parliament in the House of Commons who has had the
-            party whip withdrawn or suspended, or who has resigned it, since 1979. The whip is a member's
+            party whip withdrawn or suspended, or who has resigned it, since 1979, alongside older changes
+            of party allegiance going back to 1902. The whip is a member's
             membership of their parliamentary party: lose it, and you sit as an independent and are usually
             barred from standing for the party at the next election.
           </p>
@@ -49,10 +50,10 @@ function About() {
           <h2 className="font-display text-2xl">How to read the table</h2>
           <div className="border border-border bg-card">
             {[
-              ["Date", "The day the whip was withdrawn, suspended or resigned, or the day it became public."],
-              ["Member", "The MP involved at the time of the event."],
+              ["Date", "The day the whip was withdrawn, suspended or resigned, or the day it became public. Older records show only a month and year where the source does not specify an exact day."],
+              ["Member", "The MP involved at the time of the event. ‘Older record’ marks historical entries from the provisional section of the spreadsheet."],
               ["Constituency", "The seat the MP was representing."],
-              ["Whip", "What happened: Withdrawn, Suspended or Resigned. See below for the difference."],
+              ["Whip", "What happened: Withdrawn, Suspended or Resigned. A dash means the source does not specify the whip outcome; a change of party alone does not establish it. See below for the difference."],
               ["Party", "The party the MP held the whip for (before) and the party afterwards, if they joined one. \"Independent\" means they sat without a party."],
               ["Notes", "A short summary of why it happened, and what followed — for example if the whip was later restored."],
             ].map(([term, def]) => (
@@ -87,6 +88,13 @@ function About() {
             <span className="font-mono text-xs text-foreground">SN02537: Recall of MPs, suspension and resignation of the party whip</span>,
             updated 21 October 2026. That briefing covers the whip suspensions and resignations of the current
             parliament's parties; older parties and parliaments may be incomplete.
+          </p>
+          <p className="text-muted-foreground">
+            Entries labelled “Older record” come from the spreadsheet's DATA+ sheet, marked “Needs some work”.
+            These ten additional entries cover 1902–1972 and are provisional, potentially incomplete records
+            of changes of allegiance, not necessarily confirmed whip suspensions or resignations. Their
+            unspecified whip outcomes are not included in the Withdrawn or Resigned totals, but they are
+            included in the Total count. Entries already in the main list have not been added again.
           </p>
           <p className="text-muted-foreground">
             The notes column summarises each entry rather than quoting it in full, so for the detail behind

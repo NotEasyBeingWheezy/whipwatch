@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Combine the main and historical spreadsheet extracts in `src/lib/records.ts`, preserving source precision and provenance; keep unknown whip outcomes blank rather than inferring them from allegiance changes.
