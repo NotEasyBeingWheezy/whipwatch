@@ -94,11 +94,6 @@ function About() {
           </p>
         </div>
 
-        <div>
-          <Link to="/" className="inline-flex items-center bg-primary px-4 py-2 font-mono text-xs uppercase text-primary-foreground transition-colors hover:bg-primary/90">
-            ← Back to the records
-          </Link>
-        </div>
       </section>
     </main>
   );
