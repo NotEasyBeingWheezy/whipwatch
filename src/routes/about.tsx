@@ -90,7 +90,7 @@ function About() {
             parliament's parties; older parties and parliaments may be incomplete.
           </p>
           <p className="text-muted-foreground">
-            Entries labelled “Older record” come from the spreadsheet's DATA+ sheet, marked “Needs some work”.
+            Entries labelled “Older record” come from a hidden worksheet within <span className="font-mono text-xs text-foreground">SN02537</span> entitled <span className="font-mono text-xs text-foreground">DATA+</span>, marked “Needs some work”.
             These ten additional entries cover 1902–1972 and are provisional, potentially incomplete records
             of changes of allegiance, not necessarily confirmed whip suspensions or resignations. Their
             unspecified whip outcomes are not included in the Withdrawn or Resigned totals, but they are
