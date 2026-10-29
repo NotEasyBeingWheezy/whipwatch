@@ -27,7 +27,7 @@ function About() {
           <div className="mb-6">
             <SiteNav />
           </div>
-          <p className="font-mono text-xs uppercase tracking-[0.3em] text-primary">About</p>
+          <p className="font-mono text-xs uppercase tracking-[0.3em] text-primary">About · How to read the data</p>
           <h1 className="mt-3 font-display text-6xl md:text-8xl leading-none">WhipWatch</h1>
           <p className="mt-4 max-w-xl text-muted-foreground">
             What the site tracks, where the data comes from, and how to read it.
