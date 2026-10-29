@@ -21,11 +21,14 @@ function Index() {
   const [q, setQ] = useState("");
   const [whip, setWhip] = useState("All");
   const [party, setParty] = useState("All");
+  const [year, setYear] = useState("All");
   const parties = useMemo(() => ["All", ...Array.from(new Set(rows.map((r) => r.before).filter(Boolean))).sort()], []);
+  const years = useMemo(() => ["All", ...Array.from(new Set(rows.map((r) => r.date.slice(0, 4)))).sort().reverse()], []);
   const list = rows.filter(
     (r) =>
       (whip === "All" || r.whip === whip) &&
       (party === "All" || r.before === party) &&
+      (year === "All" || r.date.slice(0, 4) === year) &&
       (q === "" || `${r.member} ${r.constituency} ${r.notes}`.toLowerCase().includes(q.toLowerCase())),
   );
   const withdrawn = rows.filter((r) => r.whip === "Withdrawn").length;
