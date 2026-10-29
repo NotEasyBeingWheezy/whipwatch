@@ -6,7 +6,7 @@ import { SiteNav } from "@/components/site-nav";
 import { Button } from "@/components/ui/button";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 import { buildInsights, type InsightGroup } from "@/lib/insights";
-import { PartyTimeline } from "@/components/party-timeline";
+import { PartyTimeline, partyChartConfig } from "@/components/party-timeline";
 
 export const Route = createFileRoute("/insights")({
   head: () => ({ meta: [
@@ -36,6 +36,38 @@ function Legend() {
   </div>;
 }
 
+function PartyLegend() {
+  return <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-muted-foreground">
+    {data.partySeries.map((party) => <span key={party.key} className="flex items-center gap-2">
+      <i className="size-2.5" style={{ backgroundColor: partyChartConfig[party.key]?.color }} />{party.label}
+    </span>)}
+  </div>;
+}
+
+function PartyYearTable() {
+  const yearTotal = (point: (typeof data.partyYears)[number]) => data.partySeries.reduce((sum, party) => sum + Number(point[party.key as keyof typeof point] ?? 0), 0);
+  return <div className="overflow-x-auto border border-border bg-card">
+    <table className="w-full text-sm tabular-nums">
+      <caption className="sr-only">Recorded whip losses by year and party</caption>
+      <thead className="bg-secondary text-secondary-foreground font-mono text-xs uppercase">
+        <tr><th scope="col" className="px-4 py-3 text-left">Year</th>
+          {data.partySeries.map((party) => <th scope="col" key={party.key} className="px-4 py-3 text-right whitespace-nowrap">{party.label}</th>)}
+          <th scope="col" className="px-4 py-3 text-right whitespace-nowrap">Whip losses</th></tr>
+      </thead>
+      <tbody>{data.partyYears.map((point) => <tr key={point.label} className="border-t border-border hover:bg-muted">
+        <th scope="row" className="px-4 py-3 text-left font-medium whitespace-nowrap">{point.label}</th>
+        {data.partySeries.map((party) => <td key={party.key} className="px-4 py-3 text-right font-mono text-muted-foreground">{Number(point[party.key as keyof typeof point] ?? 0)}</td>)}
+        <td className="px-4 py-3 text-right font-mono font-semibold text-primary">{yearTotal(point)}</td>
+      </tr>)}</tbody>
+      <tfoot className="border-t-2 border-border font-semibold"><tr>
+        <th scope="row" className="px-4 py-3 text-left">Total</th>
+        {data.partySeries.map((party) => <td key={party.key} className="px-4 py-3 text-right font-mono">{party.total}</td>)}
+        <td className="px-4 py-3 text-right font-mono">{data.totals.total}</td>
+      </tr></tfoot>
+    </table>
+  </div>;
+}
+
 function CountsTable({ groups, heading, unknown = false }: { groups: InsightGroup[]; heading: string; unknown?: boolean }) {
   return <div className="overflow-x-auto border border-border bg-card">
     <table className="w-full text-sm tabular-nums">
@@ -55,7 +87,7 @@ function CountsTable({ groups, heading, unknown = false }: { groups: InsightGrou
 function Insights() {
   const [period, setPeriod] = useState<"year" | "parliament" | "party">("year");
   const [showTable, setShowTable] = useState(false);
-  const timeline = period === "year" ? data.years : period === "parliament" ? data.parliaments : data.parties.filter((party) => party.total > 0);
+  const timeline = period === "parliament" ? data.parliaments : data.years;
   const peak = data.years.reduce<InsightGroup | undefined>((best, group) => !best || group.total > best.total ? group : best, undefined);
   return <main className="min-h-screen bg-background text-foreground">
     <header className="border-b-4 border-primary">
@@ -78,9 +110,17 @@ function Insights() {
           <Button variant={period === "party" ? "default" : "outline"} onClick={() => setPeriod("party")} aria-pressed={period === "party"}><Users />By party</Button>
         </div>
       </div>
-      <div className="mt-6"><Legend /></div>
-      <div className="mt-5 overflow-x-auto" role="region" aria-label={`Whip losses by ${period} chart`} tabIndex={0}>
-        <ChartContainer config={config} className={`h-80 w-full aspect-auto ${period === "year" ? "min-w-[900px]" : "min-w-[700px]"}`}>
+      <div className="mt-6">{period === "party" ? <PartyLegend /> : <Legend />}</div>
+      <div className="mt-5 overflow-x-auto" role="region" aria-label={period === "party" ? "Whip losses by year and party chart" : `Whip losses by ${period} chart`} tabIndex={0}>
+        {period === "party" ? <ChartContainer config={partyChartConfig} className="h-80 w-full aspect-auto min-w-[900px]">
+          <BarChart data={data.partyYears} accessibilityLayer margin={{ top: 16, right: 12, left: 0, bottom: 15 }}>
+            <CartesianGrid vertical={false} stroke="var(--border)" />
+            <XAxis dataKey="label" tickLine={false} axisLine={false} interval={3} tickMargin={10} />
+            <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
+            <ChartTooltip content={<ChartTooltipContent labelFormatter={(_, payload) => payload[0]?.payload.label} />} />
+            {data.partySeries.map((party) => <Bar key={party.key} dataKey={party.key} stackId="events" fill={`var(--color-${party.key})`} isAnimationActive={false} />)}
+          </BarChart>
+        </ChartContainer> : <ChartContainer config={config} className={`h-80 w-full aspect-auto ${period === "year" ? "min-w-[900px]" : "min-w-[700px]"}`}>
           <BarChart data={timeline} accessibilityLayer margin={{ top: 16, right: 12, left: 0, bottom: period === "year" ? 15 : 45 }}>
             <CartesianGrid vertical={false} stroke="var(--border)" />
             <XAxis dataKey="label" tickLine={false} axisLine={false} interval={period === "year" ? 3 : 0} angle={period === "year" ? 0 : -35} textAnchor={period === "year" ? "middle" : "end"} tickMargin={10} />
@@ -88,10 +128,10 @@ function Insights() {
             <ChartTooltip content={<ChartTooltipContent labelFormatter={(_, payload) => payload[0]?.payload.label} />} />
             {series.map((key) => <Bar key={key} dataKey={key} stackId="events" fill={`var(--color-${key})`} isAnimationActive={false} />)}
           </BarChart>
-        </ChartContainer>
+        </ChartContainer>}
       </div>
       <Button className="mt-4" variant="outline" onClick={() => setShowTable(!showTable)} aria-expanded={showTable} aria-controls="timeline-data"><Table2 />{showTable ? "Hide figures" : "View figures"}</Button>
-      {showTable && <div id="timeline-data" className="mt-4"><CountsTable groups={timeline} heading={period === "year" ? "Year" : period === "parliament" ? "Parliament" : "Party"} /></div>}
+      {showTable && <div id="timeline-data" className="mt-4">{period === "party" ? <PartyYearTable /> : <CountsTable groups={timeline} heading={period === "year" ? "Year" : "Parliament"} />}</div>}
     </section>
     <PartyTimeline />
     <section className="border-t border-border" aria-labelledby="party-title">
