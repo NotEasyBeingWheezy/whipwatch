@@ -94,23 +94,23 @@ function Index() {
             <tbody className="block sm:table-row-group">
               {list.map((r, i) => (
                 <tr key={i} className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-4 gap-y-1 border-t border-border px-4 py-3 align-top first:border-t-0 hover:bg-muted sm:table-row sm:first:border-t">
-                  <td className="col-span-2 order-1 block font-semibold sm:order-none sm:table-cell sm:px-4 sm:py-3">
+                  <td className="order-2 block font-mono text-xs text-muted-foreground sm:order-none sm:table-cell sm:whitespace-nowrap sm:px-4 sm:py-3 sm:text-foreground">{formatRecordDate(r)}</td>
+                  <td className="order-1 col-span-2 block font-semibold sm:order-none sm:table-cell sm:px-4 sm:py-3">
                     {r.member}
                     {r.older && <span className="mt-2 block w-fit whitespace-nowrap border border-border bg-muted px-2 py-0.5 font-mono text-xs font-normal text-muted-foreground" title="From the provisional ‘Needs some work’ section of the spreadsheet">Older record</span>}
                   </td>
-                  <td className="order-3 block font-mono text-xs text-muted-foreground sm:order-none sm:table-cell sm:whitespace-nowrap sm:px-4 sm:py-3 sm:text-foreground">{formatRecordDate(r)}</td>
-                  <td className="order-4 block text-right sm:order-none sm:table-cell sm:px-4 sm:py-3 sm:text-left">
+                  <td className="order-4 col-span-2 block text-muted-foreground sm:order-none sm:table-cell sm:px-4 sm:py-3">{r.constituency}</td>
+                  <td className="order-3 block text-right sm:order-none sm:table-cell sm:px-4 sm:py-3 sm:text-left">
                     <span className={`px-2 py-0.5 font-mono text-xs uppercase ${r.whip === "Resigned" ? "bg-accent text-accent-foreground" : "bg-primary text-primary-foreground"}`}>{r.whip || "—"}</span>
                   </td>
-                  <td className="order-5 col-span-2 block text-muted-foreground sm:order-none sm:table-cell sm:px-4 sm:py-3">{r.constituency}</td>
-                  <td className="order-6 col-span-2 block sm:order-none sm:table-cell sm:whitespace-nowrap sm:px-4 sm:py-3">
+                  <td className="order-5 col-span-2 block sm:order-none sm:table-cell sm:whitespace-nowrap sm:px-4 sm:py-3">
                     <span className="inline-flex items-center gap-2">
                       <span aria-hidden="true" className="inline-block h-2.5 w-2.5 shrink-0" style={{ backgroundColor: partyColor(r.before) }} />
                       {partyDisplayName(r.before)}
                     </span>
                     <span className="text-muted-foreground"> → {r.after === "-" ? "—" : partyDisplayName(r.after)}</span>
                   </td>
-                  <td className="order-7 col-span-2 block text-muted-foreground sm:order-none sm:table-cell sm:max-w-sm sm:px-4 sm:py-3">{r.notes}</td>
+                  <td className="order-6 col-span-2 block text-muted-foreground sm:order-none sm:table-cell sm:max-w-sm sm:px-4 sm:py-3">{r.notes}</td>
                 </tr>
               ))}
             </tbody>
