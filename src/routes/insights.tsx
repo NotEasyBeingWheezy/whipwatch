@@ -118,7 +118,7 @@ function Insights() {
     <section className="mx-auto max-w-6xl px-6 py-10" aria-labelledby="timeline-title">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div><h2 id="timeline-title" className="font-display text-3xl">Whip losses over time</h2><p className="mt-2 text-sm text-muted-foreground">{peak?.label} has the most recorded events: <strong className="text-foreground">{peak?.total}</strong>. Coverage may be incomplete; {data.years.at(-1)?.label} runs to 20 October.</p></div>
-        <div className="flex gap-1" role="group" aria-label="Timeline grouping">
+        <div className="flex flex-wrap gap-1" role="group" aria-label="Timeline grouping">
           <Button variant={period === "year" ? "default" : "outline"} onClick={() => setPeriod("year")} aria-pressed={period === "year"}><CalendarDays />By year</Button>
           <Button variant={period === "parliament" ? "default" : "outline"} onClick={() => setPeriod("parliament")} aria-pressed={period === "parliament"}><Landmark />By parliament</Button>
           <Button variant={period === "party" ? "default" : "outline"} onClick={() => setPeriod("party")} aria-pressed={period === "party"}><Users />By party</Button>
