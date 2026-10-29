@@ -26,6 +26,7 @@ export function buildInsights(records: RecordRow[] = rows) {
   const years = new Map<string, InsightGroup>();
   const parliaments = new Map<string, InsightGroup>();
   const parties = new Map<string, InsightGroup>();
+  const annualParties = new Map<string, Map<string, number>>();
   for (const row of records) {
     addRecord(totals, row);
     const party = row.before || "Unspecified party";
@@ -35,6 +36,9 @@ export function buildInsights(records: RecordRow[] = rows) {
     if (!outcomes.some((outcome) => outcome === row.whip)) continue;
     const year = row.date.slice(0, 4);
     if (/^\d{4}$/.test(year)) {
+      const partyCounts = annualParties.get(year) ?? new Map<string, number>();
+      partyCounts.set(party, (partyCounts.get(party) ?? 0) + 1);
+      annualParties.set(year, partyCounts);
       const group = years.get(year) ?? { label: year, ...emptyCounts() };
       addRecord(group, row);
       years.set(year, group);
@@ -52,7 +56,18 @@ export function buildInsights(records: RecordRow[] = rows) {
       if (!years.has(String(year))) years.set(String(year), { label: String(year), ...emptyCounts() });
     }
   }
+  const partySeries = [...parties.entries()]
+    .filter(([, group]) => group.total > 0)
+    .sort((a, b) => b[1].total - a[1].total || a[0].localeCompare(b[0]))
+    .map(([source, group], i) => ({ key: `party${i}`, source, label: group.label, total: group.total }));
+  const partyYears = [...years.keys()].sort().map((year) => ({
+    year: Number(year) + 0.5,
+    label: year,
+    ...Object.fromEntries(partySeries.map((party) => [party.key, annualParties.get(year)?.get(party.source) ?? 0])),
+  }));
   return {
+    partySeries,
+    partyYears,
     totals,
     years: [...years.values()].sort((a, b) => a.label.localeCompare(b.label)),
     parliaments: [...parliaments.values()].sort((a, b) => a.label.localeCompare(b.label)),
