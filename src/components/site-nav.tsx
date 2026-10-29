@@ -26,6 +26,7 @@ export function SiteNav() {
       >
         About
       </Link>
+      <ThemeToggle />
     </nav>
   );
 }
