@@ -33,7 +33,7 @@ export function PartyTimeline() {
           className={hidden.includes(party.key) ? "opacity-40" : ""}
           aria-pressed={!hidden.includes(party.key)}
           onClick={() => setHidden((previous) => previous.includes(party.key) ? previous.filter((key) => key !== party.key) : [...previous, party.key])}>
-          <svg width="20" height="8" aria-hidden="true"><path d="M0 4H20" stroke={partyChartConfig[party.key]?.color} strokeWidth="3" /></svg>
+          <svg width="12" height="12" aria-hidden="true"><rect width="12" height="12" fill={partyChartConfig[party.key]?.color} /></svg>
           {party.label}
         </Button>)}
       </div>
