@@ -120,7 +120,7 @@ function Insights() {
     .map((point) => ({ ...point, visibleTotal: keys.reduce((sum, key) => sum + Number((point as Record<string, unknown>)[key] ?? 0), 0) }));
   const totalLabels = <LabelList dataKey="visibleTotal" position="top" offset={isMobile && !byParliament ? 12 : 8}
     angle={isMobile && !byParliament ? -90 : 0} fontSize={isMobile ? 9 : 11} className="fill-foreground font-mono"
-    formatter={(value) => Number(value) > 0 ? String(value) : ""} />;
+    formatter={(value: unknown) => Number(value) > 0 ? String(value) : ""} />;
   const chartConfig = view === "party" ? partyChartConfig : config;
   const color = (key: string) => view === "party" ? partyChartConfig[key]?.color : config[key as keyof typeof config].color;
   const yearAxis = <XAxis type="number" dataKey="year" domain={[startYear, endYear]} ticks={isMobile ? yearTicks.filter((_, index) => index % 2 === 0) : yearTicks}
