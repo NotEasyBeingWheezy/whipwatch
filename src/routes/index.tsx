@@ -15,11 +15,11 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  validateSearch: (s: Record<string, unknown>): { q?: string; whip?: string; party?: string; year?: string; sort?: string } => ({
+  validateSearch: (s: Record<string, unknown>): { q?: string; whip?: string; party?: string; year?: number; sort?: string } => ({
     q: typeof s["q"] === "string" && s["q"] ? s["q"] : undefined,
     whip: typeof s["whip"] === "string" && s["whip"] !== "All" ? s["whip"] : undefined,
     party: typeof s["party"] === "string" && s["party"] !== "All" ? s["party"] : undefined,
-    year: s["year"] != null && String(s["year"]) !== "All" ? String(s["year"]) : undefined,
+    year: s["year"] != null && String(s["year"]) !== "All" ? Number(s["year"]) || undefined : undefined,
     sort: s["sort"] === "oldest" ? "oldest" : undefined,
   }),
   component: Index,
@@ -28,17 +28,17 @@ export const Route = createFileRoute("/")({
 function Index() {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
-  const set = (patch: Record<string, string | undefined>) =>
+  const set = (patch: Record<string, string | number | undefined>) =>
     navigate({ search: (prev) => ({ ...prev, ...patch }), replace: true });
   const q = search.q ?? "";
   const whip = search.whip ?? "All";
   const party = search.party ?? "All";
-  const year = search.year ?? "All";
+  const year = search.year ? String(search.year) : "All";
   const dateAsc = search.sort === "oldest";
   const setQ = (v: string) => set({ q: v || undefined });
   const setWhip = (v: string) => set({ whip: v === "All" ? undefined : v });
   const setParty = (v: string) => set({ party: v === "All" ? undefined : v });
-  const setYear = (v: string) => set({ year: v === "All" ? undefined : (Number(v) as unknown as string) });
+  const setYear = (v: string) => set({ year: v === "All" ? undefined : Number(v) });
   const setDateAsc = (v: boolean | ((p: boolean) => boolean)) => {
     const next = typeof v === "function" ? v(dateAsc) : v;
     set({ sort: next ? "oldest" : undefined });
