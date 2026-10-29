@@ -120,7 +120,7 @@ function Insights() {
   const color = (key: string) => view === "party" ? partyChartConfig[key]?.color : config[key as keyof typeof config].color;
   const yearAxis = <XAxis type="number" dataKey="year" domain={[startYear, endYear]} ticks={isMobile ? yearTicks.filter((_, index) => index % 2 === 0) : yearTicks}
     tickFormatter={(value) => String(Math.floor(Number(value)))} tickLine={false} axisLine={false} tickMargin={10} />;
-  const parliamentAxis = <XAxis dataKey="label" tickLine={false} axisLine={false} interval={0} angle={isMobile ? -65 : -35} textAnchor="end" tickMargin={10} height={isMobile ? 85 : 30} tick={isMobile ? { fontSize: 10 } : undefined} />;
+  const parliamentAxis = <XAxis dataKey="label" tickLine={false} axisLine={false} interval={0} angle={isMobile ? -65 : -35} textAnchor="end" tickMargin={10} height={isMobile ? 85 : 30} tick={isMobile ? { fontSize: 10 } : true} />;
   const parliamentMargin = { top: 16, right: isMobile ? 16 : 24, left: isMobile ? 0 : 30, bottom: isMobile ? 5 : 45 };
   const toggle = (label: string, active: boolean, onClick: () => void, icon: ReactNode, disabled = false) =>
     <Button className="min-w-0 px-2 sm:px-3" size="sm" variant={active ? "default" : "outline"} onClick={onClick} aria-pressed={active} disabled={disabled}>{icon}{label}</Button>;
@@ -185,7 +185,7 @@ function Insights() {
             {yearAxis}
             <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
             <ChartTooltip content={<ChartTooltipContent labelFormatter={(_, payload) => payload[0]?.payload.label} />} />
-            {keys.map((key) => <Bar key={key} dataKey={key} stackId="events" barSize={isMobile ? undefined : 13} fill={color(key)} isAnimationActive={false} />)}
+            {keys.map((key) => <Bar key={key} dataKey={key} stackId="events" {...(isMobile ? {} : { barSize: 13 })} fill={color(key)} isAnimationActive={false} />)}
           </BarChart> : <LineChart data={chartData} accessibilityLayer margin={{ top: 16, right: 12, left: 0, bottom: 15 }}>
             {governmentAreas(startYear, endYear)}
             <CartesianGrid vertical={false} stroke="var(--border)" />
