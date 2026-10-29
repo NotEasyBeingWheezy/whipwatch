@@ -18,6 +18,15 @@ export function governmentAreas(start: number, end: number) {
   });
 }
 
+// One shaded band per parliament category, spanning half a category either side.
+export function parliamentGovernmentAreas(labels: string[], tokens: (string | undefined)[]) {
+  return labels.map((label, i) => {
+    const token = tokens[i];
+    return token ? <ReferenceArea key={label} x1={labels[i - 1] ?? label} x2={labels[i + 1] ?? label}
+      fill={`var(--${token})`} fillOpacity={1} stroke="none" /> : null;
+  });
+}
+
 export function GovernmentLegend() {
   return <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-xs text-muted-foreground" aria-label="Government shading legend">
     {[governmentPeriods[0], governmentPeriods[1], governmentPeriods[2]].map((government) => government && <span key={government.label} className="flex items-center gap-2">

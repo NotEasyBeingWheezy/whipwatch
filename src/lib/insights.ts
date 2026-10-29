@@ -96,6 +96,7 @@ export function buildInsights(records: RecordRow[] = rows) {
   }));
   const partyParliaments = [...parliaments.keys()].sort().map((parliament) => ({
     label: parliament,
+    government: parliamentGovernment(parliament)?.token,
     ...Object.fromEntries(partySeries.map((party) => [party.key, parliamentParties.get(parliament)?.get(party.source) ?? 0])),
   }));
   return {
