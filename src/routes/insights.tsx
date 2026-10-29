@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
-import { CalendarDays, Landmark, Table2 } from "lucide-react";
+import { CalendarDays, Landmark, Table2, Users } from "lucide-react";
 import { SiteNav } from "@/components/site-nav";
 import { Button } from "@/components/ui/button";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
@@ -53,9 +53,9 @@ function CountsTable({ groups, heading, unknown = false }: { groups: InsightGrou
 }
 
 function Insights() {
-  const [period, setPeriod] = useState<"year" | "parliament">("year");
+  const [period, setPeriod] = useState<"year" | "parliament" | "party">("year");
   const [showTable, setShowTable] = useState(false);
-  const timeline = period === "year" ? data.years : data.parliaments;
+  const timeline = period === "year" ? data.years : period === "parliament" ? data.parliaments : data.parties.filter((party) => party.total > 0);
   const peak = data.years.reduce<InsightGroup | undefined>((best, group) => !best || group.total > best.total ? group : best, undefined);
   return <main className="min-h-screen bg-background text-foreground">
     <header className="border-b-4 border-primary">
@@ -75,14 +75,15 @@ function Insights() {
         <div className="flex gap-1" role="group" aria-label="Timeline grouping">
           <Button variant={period === "year" ? "default" : "outline"} onClick={() => setPeriod("year")} aria-pressed={period === "year"}><CalendarDays />By year</Button>
           <Button variant={period === "parliament" ? "default" : "outline"} onClick={() => setPeriod("parliament")} aria-pressed={period === "parliament"}><Landmark />By parliament</Button>
+          <Button variant={period === "party" ? "default" : "outline"} onClick={() => setPeriod("party")} aria-pressed={period === "party"}><Users />By party</Button>
         </div>
       </div>
       <div className="mt-6"><Legend /></div>
       <div className="mt-5 overflow-x-auto" role="region" aria-label={`Whip losses by ${period} chart`} tabIndex={0}>
         <ChartContainer config={config} className={`h-80 w-full aspect-auto ${period === "year" ? "min-w-[900px]" : "min-w-[700px]"}`}>
-          <BarChart data={timeline} accessibilityLayer margin={{ top: 16, right: 12, left: 0, bottom: period === "parliament" ? 45 : 15 }}>
+          <BarChart data={timeline} accessibilityLayer margin={{ top: 16, right: 12, left: 0, bottom: period === "year" ? 15 : 45 }}>
             <CartesianGrid vertical={false} stroke="var(--border)" />
-            <XAxis dataKey="label" tickLine={false} axisLine={false} interval={period === "year" ? 3 : 0} angle={period === "parliament" ? -35 : 0} textAnchor={period === "parliament" ? "end" : "middle"} tickMargin={10} />
+            <XAxis dataKey="label" tickLine={false} axisLine={false} interval={period === "year" ? 3 : 0} angle={period === "year" ? 0 : -35} textAnchor={period === "year" ? "middle" : "end"} tickMargin={10} />
             <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
             <ChartTooltip content={<ChartTooltipContent labelFormatter={(_, payload) => payload[0]?.payload.label} />} />
             {series.map((key) => <Bar key={key} dataKey={key} stackId="events" fill={`var(--color-${key})`} isAnimationActive={false} />)}
@@ -90,7 +91,7 @@ function Insights() {
         </ChartContainer>
       </div>
       <Button className="mt-4" variant="outline" onClick={() => setShowTable(!showTable)} aria-expanded={showTable} aria-controls="timeline-data"><Table2 />{showTable ? "Hide figures" : "View figures"}</Button>
-      {showTable && <div id="timeline-data" className="mt-4"><CountsTable groups={timeline} heading={period === "year" ? "Year" : "Parliament"} /></div>}
+      {showTable && <div id="timeline-data" className="mt-4"><CountsTable groups={timeline} heading={period === "year" ? "Year" : period === "parliament" ? "Parliament" : "Party"} /></div>}
     </section>
     <PartyTimeline />
     <section className="border-t border-border" aria-labelledby="party-title">
