@@ -12,6 +12,13 @@ export function SiteNav() {
         Home
       </Link>
       <Link
+        to="/insights"
+        activeProps={{ className: "border-b-2 border-primary pb-1 text-primary" }}
+        inactiveProps={{ className: "pb-1 text-muted-foreground transition-colors hover:text-foreground" }}
+      >
+        Insights
+      </Link>
+      <Link
         to="/about"
         activeProps={{ className: "border-b-2 border-primary pb-1 text-primary" }}
         inactiveProps={{ className: "pb-1 text-muted-foreground transition-colors hover:text-foreground" }}
