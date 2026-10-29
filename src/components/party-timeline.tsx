@@ -22,11 +22,22 @@ export function governmentAreas(start: number, end: number) {
 // categories; outer edges clamp numerically to the chart boundary. The band
 // colours are translucent, so the slight overlap at boundaries stays subtle.
 export function parliamentGovernmentAreas(labels: string[], tokens: (string | undefined)[]) {
-  return labels.map((label, i) => {
-    const token = tokens[i];
-    return token ? <ReferenceArea key={label} x1={i === 0 ? -0.5 : labels[i - 1]!} x2={i === labels.length - 1 ? labels.length - 0.5 : labels[i + 1]!}
-      fill={`var(--${token})`} fillOpacity={0.55} stroke="none" /> : null;
-  });
+  // Merge consecutive parliaments under the same government into one band,
+  // so long stretches (e.g. 1979–1997 Conservative) render as a single area.
+  const areas: ReactNode[] = [];
+  let runStart = 0;
+  for (let i = 0; i <= labels.length; i++) {
+    if (i < labels.length && tokens[i] === tokens[runStart]) continue;
+    const token = tokens[runStart];
+    if (token) {
+      areas.push(<ReferenceArea key={`${token}-${runStart}`}
+        x1={runStart === 0 ? -0.5 : labels[runStart]!}
+        x2={i === labels.length ? labels.length - 0.5 : labels[i - 1]!}
+        fill={`var(--${token})`} fillOpacity={0.55} stroke="none" />);
+    }
+    runStart = i;
+  }
+  return areas;
 }
 
 export function GovernmentLegend() {
