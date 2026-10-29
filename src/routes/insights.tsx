@@ -6,7 +6,7 @@ import { SiteNav } from "@/components/site-nav";
 import { Button } from "@/components/ui/button";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 import { buildInsights, type InsightGroup } from "@/lib/insights";
-import { PartyTimeline } from "@/components/party-timeline";
+import { PartyTimeline, partyChartConfig } from "@/components/party-timeline";
 
 export const Route = createFileRoute("/insights")({
   head: () => ({ meta: [
@@ -33,6 +33,38 @@ function Legend() {
     <span className="flex items-center gap-2"><i className="size-2.5 bg-primary" />Withdrawn</span>
     <span className="flex items-center gap-2"><i className="size-2.5 bg-chart-2" />Resigned</span>
     <span className="flex items-center gap-2"><i className="size-2.5 bg-chart-4" />Suspended</span>
+  </div>;
+}
+
+function PartyLegend() {
+  return <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-muted-foreground">
+    {data.partySeries.map((party) => <span key={party.key} className="flex items-center gap-2">
+      <i className="size-2.5" style={{ backgroundColor: partyChartConfig[party.key]?.color }} />{party.label}
+    </span>)}
+  </div>;
+}
+
+function PartyYearTable() {
+  const yearTotal = (point: (typeof data.partyYears)[number]) => data.partySeries.reduce((sum, party) => sum + Number(point[party.key] ?? 0), 0);
+  return <div className="overflow-x-auto border border-border bg-card">
+    <table className="w-full text-sm tabular-nums">
+      <caption className="sr-only">Recorded whip losses by year and party</caption>
+      <thead className="bg-secondary text-secondary-foreground font-mono text-xs uppercase">
+        <tr><th scope="col" className="px-4 py-3 text-left">Year</th>
+          {data.partySeries.map((party) => <th scope="col" key={party.key} className="px-4 py-3 text-right whitespace-nowrap">{party.label}</th>)}
+          <th scope="col" className="px-4 py-3 text-right whitespace-nowrap">Whip losses</th></tr>
+      </thead>
+      <tbody>{data.partyYears.map((point) => <tr key={point.label} className="border-t border-border hover:bg-muted">
+        <th scope="row" className="px-4 py-3 text-left font-medium whitespace-nowrap">{point.label}</th>
+        {data.partySeries.map((party) => <td key={party.key} className="px-4 py-3 text-right font-mono text-muted-foreground">{Number(point[party.key] ?? 0)}</td>)}
+        <td className="px-4 py-3 text-right font-mono font-semibold text-primary">{yearTotal(point)}</td>
+      </tr>)}</tbody>
+      <tfoot className="border-t-2 border-border font-semibold"><tr>
+        <th scope="row" className="px-4 py-3 text-left">Total</th>
+        {data.partySeries.map((party) => <td key={party.key} className="px-4 py-3 text-right font-mono">{party.total}</td>)}
+        <td className="px-4 py-3 text-right font-mono">{data.totals.total}</td>
+      </tr></tfoot>
+    </table>
   </div>;
 }
 
