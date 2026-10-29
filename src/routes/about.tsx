@@ -30,7 +30,7 @@ function About() {
           <p className="font-mono text-xs uppercase tracking-[0.3em] text-primary">About · How to read the data</p>
           <h1 className="mt-3 font-display text-6xl md:text-8xl leading-none">WhipWatch</h1>
           <p className="mt-4 max-w-xl text-muted-foreground">
-            What the site tracks, where the data comes from, and how to read it.
+            What WhipWatch tracks, where the data comes from, and how to read each column.
           </p>
           <dl className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-2xl">
             {([["Total", rows.length], ["Withdrawn", count("Withdrawn")], ["Resigned", count("Resigned")], ["Suspended", count("Suspended")]] as const).map(([l, n]) => (
