@@ -21,11 +21,14 @@ function Index() {
   const [q, setQ] = useState("");
   const [whip, setWhip] = useState("All");
   const [party, setParty] = useState("All");
+  const [year, setYear] = useState("All");
   const parties = useMemo(() => ["All", ...Array.from(new Set(rows.map((r) => r.before).filter(Boolean))).sort()], []);
+  const years = useMemo(() => ["All", ...Array.from(new Set(rows.map((r) => r.date.slice(0, 4)))).sort().reverse()], []);
   const list = rows.filter(
     (r) =>
       (whip === "All" || r.whip === whip) &&
       (party === "All" || r.before === party) &&
+      (year === "All" || r.date.slice(0, 4) === year) &&
       (q === "" || `${r.member} ${r.constituency} ${r.notes}`.toLowerCase().includes(q.toLowerCase())),
   );
   const withdrawn = rows.filter((r) => r.whip === "Withdrawn").length;
@@ -63,6 +66,9 @@ function Index() {
           </select>
           <select value={party} onChange={(e) => setParty(e.target.value)} className="border border-input bg-card px-3 py-2">
             {parties.map((p) => <option key={p}>{p}</option>)}
+          </select>
+          <select value={year} onChange={(e) => setYear(e.target.value)} className="border border-input bg-card px-3 py-2" aria-label="Filter by year">
+            {years.map((y) => <option key={y} value={y}>{y === "All" ? "All years" : y}</option>)}
           </select>
         </div>
         <p className="font-mono text-xs text-muted-foreground mb-3">{list.length} records · {list.filter((r) => r.older).length} older records</p>
