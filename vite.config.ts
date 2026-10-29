@@ -18,10 +18,9 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
     // Prerender all routes to static HTML so the site can be hosted on GitHub Pages.
-    // Paths include the base prefix so the router's basepath matches during prerender.
-    pages: ["/", "/insights/", "/about/"].map((p) => ({
-      path: `${(process.env.VITE_BASE_PATH ?? "/").replace(/\/$/, "")}${p}`,
-    })),
+    // The router renders with basepath "/" during prerender (see src/router.tsx),
+    // so these paths stay unprefixed and each route lands at <route>/index.html.
+    pages: [{ path: "/" }, { path: "/insights" }, { path: "/about" }],
     prerender: { enabled: true, autoStaticPathsDiscovery: false },
   },
 });
