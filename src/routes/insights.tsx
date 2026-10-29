@@ -5,8 +5,8 @@ import { BarChart3, CalendarDays, Landmark, LineChart as LineIcon, ListChecks, T
 import { SiteNav } from "@/components/site-nav";
 import { Button } from "@/components/ui/button";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
-import { buildInsights, type InsightGroup } from "@/lib/insights";
-import { GovernmentLegend, governmentAreas, partyChartConfig } from "@/components/party-timeline";
+import { buildInsights, parliamentGovernment, type InsightGroup } from "@/lib/insights";
+import { GovernmentLegend, governmentAreas, parliamentGovernmentAreas, partyChartConfig } from "@/components/party-timeline";
 
 export const Route = createFileRoute("/insights")({
   head: () => ({ meta: [
@@ -31,6 +31,8 @@ const outcomeYears = data.years.map((group) => ({ ...group, year: Number(group.l
 const startYear = Number(data.years.at(0)?.label ?? 1979);
 const endYear = Number(data.years.at(-1)?.label ?? 2026) + 1;
 const yearTicks = outcomeYears.filter((_, i) => i % 4 === 0).map((point) => point.year);
+const parliamentLabels = data.parliaments.map((group) => group.label);
+const parliamentTokens = parliamentLabels.map((label) => parliamentGovernment(label)?.token);
 
 function toggleKey(list: string[], key: string) {
   return list.includes(key) ? list.filter((item) => item !== key) : [...list, key];
