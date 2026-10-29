@@ -134,7 +134,7 @@ function Insights() {
             <XAxis dataKey="label" tickLine={false} axisLine={false} interval={3} tickMargin={10} />
             <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
             <ChartTooltip content={<ChartTooltipContent labelFormatter={(_, payload) => payload[0]?.payload.label} />} />
-            {data.partySeries.map((party) => <Bar key={party.key} dataKey={party.key} stackId="events" fill={`var(--color-${party.key})`} isAnimationActive={false} />)}
+            {data.partySeries.filter((party) => !hiddenParties.includes(party.key)).map((party) => <Bar key={party.key} dataKey={party.key} stackId="events" fill={`var(--color-${party.key})`} isAnimationActive={false} />)}
           </BarChart>
         </ChartContainer> : <ChartContainer config={config} className={`h-80 w-full aspect-auto ${period === "year" ? "min-w-[900px]" : "min-w-[700px]"}`}>
           <BarChart data={timeline} accessibilityLayer margin={{ top: 16, right: 12, left: 0, bottom: period === "year" ? 15 : 45 }}>
