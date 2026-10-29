@@ -91,7 +91,7 @@ function Insights() {
         </ChartContainer>
       </div>
       <Button className="mt-4" variant="outline" onClick={() => setShowTable(!showTable)} aria-expanded={showTable} aria-controls="timeline-data"><Table2 />{showTable ? "Hide figures" : "View figures"}</Button>
-      {showTable && <div id="timeline-data" className="mt-4"><CountsTable groups={timeline} heading={period === "year" ? "Year" : "Parliament"} /></div>}
+      {showTable && <div id="timeline-data" className="mt-4"><CountsTable groups={timeline} heading={period === "year" ? "Year" : period === "parliament" ? "Parliament" : "Party"} /></div>}
     </section>
     <PartyTimeline />
     <section className="border-t border-border" aria-labelledby="party-title">
