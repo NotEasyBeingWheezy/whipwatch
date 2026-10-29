@@ -74,8 +74,9 @@ describe("party counts by parliament", () => {
     expect(parliamentGovernment("1997-2001")?.token).toBe("government-labour");
     expect(parliamentGovernment("2010-2015")?.token).toBe("government-coalition");
     expect(parliamentGovernment("2017-2019")?.token).toBe("government-conservative");
-    // The 2024 parliament began 4 July, the day before Labour took office on 5 July.
-    expect(parliamentGovernment("2024")?.token).toBe("government-conservative");
+    // The 2024 parliament began 4 July, the day before Labour took office, but
+    // is shaded Labour as nearly all of it sits under the Labour government.
+    expect(parliamentGovernment("2024")?.token).toBe("government-labour");
     const data = buildInsights();
     for (const point of data.partyParliaments) {
       expect(point.government).toBe(parliamentGovernment(point.label)?.token);

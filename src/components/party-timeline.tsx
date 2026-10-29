@@ -35,7 +35,7 @@ export function parliamentGovernmentAreas(labels: string[], tokens: (string | un
       // first/last labels (numeric clamps like -0.5 render nothing).
       areas.push(<ReferenceArea key={`${token}-${runStart}`}
         x1={labels[runStart]!} x2={labels[i - 1]!}
-        fill={`var(--${token})`} fillOpacity={0.55} stroke="none" />);
+        fill={`var(--${token})`} fillOpacity={0.85} stroke="none" />);
     }
     runStart = i;
   }
