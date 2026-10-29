@@ -58,6 +58,7 @@ function Index() {
   }, [q, whip, party, year, dateAsc]);
   const withdrawn = rows.filter((r) => r.whip === "Withdrawn").length;
   const resigned = rows.filter((r) => r.whip === "Resigned").length;
+  const suspended = rows.filter((r) => r.whip === "Suspended").length;
 
   return (
     <main className="min-h-screen bg-background text-foreground">
@@ -71,8 +72,8 @@ function Index() {
           <p className="mt-4 max-w-xl text-muted-foreground">
             Every MP who had the party whip withdrawn, suspended or who resigned it.
           </p>
-          <dl className="mt-8 grid grid-cols-3 gap-6 max-w-xl">
-            {[["Total", rows.length], ["Withdrawn", withdrawn], ["Resigned", resigned]].map(([l, n]) => (
+          <dl className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-2xl">
+            {[["Total", rows.length], ["Withdrawn", withdrawn], ["Resigned", resigned], ["Suspended", suspended]].map(([l, n]) => (
               <div key={l} className="border-l-2 border-border pl-4">
                 <dd className="font-display text-4xl text-primary">{n}</dd>
                 <dt className="mt-1 font-mono text-xs uppercase text-muted-foreground">{l}</dt>
