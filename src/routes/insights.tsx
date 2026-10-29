@@ -45,7 +45,7 @@ function PartyLegend() {
 }
 
 function PartyYearTable() {
-  const yearTotal = (point: (typeof data.partyYears)[number]) => data.partySeries.reduce((sum, party) => sum + Number(point[party.key] ?? 0), 0);
+  const yearTotal = (point: (typeof data.partyYears)[number]) => data.partySeries.reduce((sum, party) => sum + Number(point[party.key as keyof typeof point] ?? 0), 0);
   return <div className="overflow-x-auto border border-border bg-card">
     <table className="w-full text-sm tabular-nums">
       <caption className="sr-only">Recorded whip losses by year and party</caption>
@@ -56,7 +56,7 @@ function PartyYearTable() {
       </thead>
       <tbody>{data.partyYears.map((point) => <tr key={point.label} className="border-t border-border hover:bg-muted">
         <th scope="row" className="px-4 py-3 text-left font-medium whitespace-nowrap">{point.label}</th>
-        {data.partySeries.map((party) => <td key={party.key} className="px-4 py-3 text-right font-mono text-muted-foreground">{Number(point[party.key] ?? 0)}</td>)}
+        {data.partySeries.map((party) => <td key={party.key} className="px-4 py-3 text-right font-mono text-muted-foreground">{Number(point[party.key as keyof typeof point] ?? 0)}</td>)}
         <td className="px-4 py-3 text-right font-mono font-semibold text-primary">{yearTotal(point)}</td>
       </tr>)}</tbody>
       <tfoot className="border-t-2 border-border font-semibold"><tr>
