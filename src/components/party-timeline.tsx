@@ -7,7 +7,7 @@ import { chartDate, governmentPeriods } from "@/lib/government-periods";
 
 const data = buildInsights();
 const tokens: Record<string, string> = {
-  Lab: "party-labour", Con: "party-conservative", LD: "party-libdem", SNP: "party-snp",
+  Lab: "party-labour", Con: "party-conservative", LD: "party-libdem", "Lib Dem": "party-libdem", SNP: "party-snp",
   CUK: "party-cuk", "Lab (Co-op)": "party-coop", UUP: "party-uup", DUP: "party-dup",
   "Reform UK": "party-reform", "Deputy Speaker": "party-speaker", Ind: "party-independent",
   PC: "party-plaid", SDLP: "party-sdlp", SF: "party-sf",
