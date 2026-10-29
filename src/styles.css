@@ -112,9 +112,9 @@
   --party-plaid: oklch(0.49 0.14 145);
   --party-sdlp: oklch(0.63 0.11 155);
   --party-sf: oklch(0.39 0.08 165);
-  --government-conservative: oklch(0.52 0.17 255 / 7%);
-  --government-labour: oklch(0.55 0.21 25 / 7%);
-  --government-coalition: oklch(0.65 0.16 75 / 9%);
+  --government-conservative: oklch(0.52 0.17 255 / 10%);
+  --government-labour: oklch(0.55 0.21 25 / 10%);
+  --government-coalition: oklch(0.65 0.16 75 / 10%);
 }
 
 .dark {
