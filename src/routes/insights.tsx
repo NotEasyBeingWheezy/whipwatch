@@ -28,19 +28,31 @@ const config = {
 } satisfies ChartConfig;
 const series = ["withdrawn", "resigned", "suspended"] as const;
 
-function Legend() {
-  return <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-muted-foreground">
-    <span className="flex items-center gap-2"><i className="size-2.5 bg-primary" />Withdrawn</span>
-    <span className="flex items-center gap-2"><i className="size-2.5 bg-chart-2" />Resigned</span>
-    <span className="flex items-center gap-2"><i className="size-2.5 bg-chart-4" />Suspended</span>
+function toggleKey(list: string[], key: string) {
+  return list.includes(key) ? list.filter((item) => item !== key) : [...list, key];
+}
+
+function Legend({ hidden, onToggle }: { hidden: string[]; onToggle: (key: string) => void }) {
+  return <div className="flex flex-wrap gap-2" role="group" aria-label="Outcome series">
+    {series.map((key) => <Button key={key} variant="ghost" size="sm"
+      className={hidden.includes(key) ? "opacity-40" : ""}
+      aria-pressed={!hidden.includes(key)}
+      onClick={() => onToggle(key)}>
+      <svg width="20" height="8" aria-hidden="true"><path d="M0 4H20" stroke={config[key].color} strokeWidth="3" /></svg>
+      {config[key].label}
+    </Button>)}
   </div>;
 }
 
-function PartyLegend() {
-  return <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-muted-foreground">
-    {data.partySeries.map((party) => <span key={party.key} className="flex items-center gap-2">
-      <i className="size-2.5" style={{ backgroundColor: partyChartConfig[party.key]?.color }} />{party.label}
-    </span>)}
+function PartyLegend({ hidden, onToggle }: { hidden: string[]; onToggle: (key: string) => void }) {
+  return <div className="flex flex-wrap gap-2" role="group" aria-label="Party series">
+    {data.partySeries.map((party) => <Button key={party.key} variant="ghost" size="sm"
+      className={hidden.includes(party.key) ? "opacity-40" : ""}
+      aria-pressed={!hidden.includes(party.key)}
+      onClick={() => onToggle(party.key)}>
+      <svg width="20" height="8" aria-hidden="true"><path d="M0 4H20" stroke={partyChartConfig[party.key]?.color} strokeWidth="3" /></svg>
+      {party.label}
+    </Button>)}
   </div>;
 }
 
@@ -87,6 +99,8 @@ function CountsTable({ groups, heading, unknown = false }: { groups: InsightGrou
 function Insights() {
   const [period, setPeriod] = useState<"year" | "parliament" | "party">("year");
   const [showTable, setShowTable] = useState(false);
+  const [hiddenOutcomes, setHiddenOutcomes] = useState<string[]>([]);
+  const [hiddenParties, setHiddenParties] = useState<string[]>([]);
   const timeline = period === "parliament" ? data.parliaments : data.years;
   const peak = data.years.reduce<InsightGroup | undefined>((best, group) => !best || group.total > best.total ? group : best, undefined);
   return <main className="min-h-screen bg-background text-foreground">
@@ -110,7 +124,9 @@ function Insights() {
           <Button variant={period === "party" ? "default" : "outline"} onClick={() => setPeriod("party")} aria-pressed={period === "party"}><Users />By party</Button>
         </div>
       </div>
-      <div className="mt-6">{period === "party" ? <PartyLegend /> : <Legend />}</div>
+      <div className="mt-6">{period === "party"
+        ? <PartyLegend hidden={hiddenParties} onToggle={(key) => setHiddenParties((previous) => toggleKey(previous, key))} />
+        : <Legend hidden={hiddenOutcomes} onToggle={(key) => setHiddenOutcomes((previous) => toggleKey(previous, key))} />}</div>
       <div className="mt-5 overflow-x-auto" role="region" aria-label={period === "party" ? "Whip losses by year and party chart" : `Whip losses by ${period} chart`} tabIndex={0}>
         {period === "party" ? <ChartContainer config={partyChartConfig} className="h-80 w-full aspect-auto min-w-[900px]">
           <BarChart data={data.partyYears} accessibilityLayer margin={{ top: 16, right: 12, left: 0, bottom: 15 }}>
@@ -118,7 +134,7 @@ function Insights() {
             <XAxis dataKey="label" tickLine={false} axisLine={false} interval={3} tickMargin={10} />
             <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
             <ChartTooltip content={<ChartTooltipContent labelFormatter={(_, payload) => payload[0]?.payload.label} />} />
-            {data.partySeries.map((party) => <Bar key={party.key} dataKey={party.key} stackId="events" fill={`var(--color-${party.key})`} isAnimationActive={false} />)}
+            {data.partySeries.filter((party) => !hiddenParties.includes(party.key)).map((party) => <Bar key={party.key} dataKey={party.key} stackId="events" fill={`var(--color-${party.key})`} isAnimationActive={false} />)}
           </BarChart>
         </ChartContainer> : <ChartContainer config={config} className={`h-80 w-full aspect-auto ${period === "year" ? "min-w-[900px]" : "min-w-[700px]"}`}>
           <BarChart data={timeline} accessibilityLayer margin={{ top: 16, right: 12, left: 0, bottom: period === "year" ? 15 : 45 }}>
@@ -126,7 +142,7 @@ function Insights() {
             <XAxis dataKey="label" tickLine={false} axisLine={false} interval={period === "year" ? 3 : 0} angle={period === "year" ? 0 : -35} textAnchor={period === "year" ? "middle" : "end"} tickMargin={10} />
             <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
             <ChartTooltip content={<ChartTooltipContent labelFormatter={(_, payload) => payload[0]?.payload.label} />} />
-            {series.map((key) => <Bar key={key} dataKey={key} stackId="events" fill={`var(--color-${key})`} isAnimationActive={false} />)}
+            {series.filter((key) => !hiddenOutcomes.includes(key)).map((key) => <Bar key={key} dataKey={key} stackId="events" fill={`var(--color-${key})`} isAnimationActive={false} />)}
           </BarChart>
         </ChartContainer>}
       </div>
@@ -138,7 +154,7 @@ function Insights() {
       <div className="mx-auto max-w-6xl px-6 py-10">
         <h2 id="party-title" className="font-display text-3xl">Totals by party</h2>
         <p className="mt-2 max-w-2xl text-sm text-muted-foreground">Attributed to the party before each event. Source categories are kept separate, including Labour and Labour (Co-op). Unspecified outcomes are not counted as whip losses.</p>
-        <div className="mt-6"><Legend /></div>
+        <div className="mt-6"><Legend hidden={[]} onToggle={() => {}} /></div>
         <div className="mt-5 overflow-x-auto" role="region" aria-label="Whip losses by party chart" tabIndex={0}>
           <ChartContainer config={config} className="h-[520px] w-full min-w-[600px] aspect-auto">
             <BarChart data={data.parties.filter((party) => party.total > 0)} layout="vertical" accessibilityLayer margin={{ left: 0, right: 24, top: 8, bottom: 8 }}>
