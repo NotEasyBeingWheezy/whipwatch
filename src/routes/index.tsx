@@ -17,19 +17,49 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
+type SortKey = "date" | "member" | "party";
+
 function Index() {
   const [q, setQ] = useState("");
   const [whip, setWhip] = useState("All");
   const [party, setParty] = useState("All");
   const [year, setYear] = useState("All");
+  const [sortKey, setSortKey] = useState<SortKey>("date");
+  const [sortAsc, setSortAsc] = useState(false);
   const parties = useMemo(() => ["All", ...Array.from(new Set(rows.map((r) => r.before).filter(Boolean))).sort()], []);
   const years = useMemo(() => ["All", ...Array.from(new Set(rows.map((r) => r.date.slice(0, 4)))).sort().reverse()], []);
-  const list = rows.filter(
-    (r) =>
-      (whip === "All" || r.whip === whip) &&
-      (party === "All" || r.before === party) &&
-      (year === "All" || r.date.slice(0, 4) === year) &&
-      (q === "" || `${r.member} ${r.constituency} ${r.notes}`.toLowerCase().includes(q.toLowerCase())),
+  const list = useMemo(() => {
+    const filtered = rows.filter(
+      (r) =>
+        (whip === "All" || r.whip === whip) &&
+        (party === "All" || r.before === party) &&
+        (year === "All" || r.date.slice(0, 4) === year) &&
+        (q === "" || `${r.member} ${r.constituency} ${r.notes}`.toLowerCase().includes(q.toLowerCase())),
+    );
+    const dir = sortAsc ? 1 : -1;
+    return [...filtered].sort((a, b) => {
+      if (sortKey === "date") return a.date.localeCompare(b.date) * dir;
+      if (sortKey === "member") return a.member.localeCompare(b.member) * dir;
+      return a.before.localeCompare(b.before) * dir;
+    });
+  }, [q, whip, party, year, sortKey, sortAsc]);
+  const toggleSort = (key: SortKey) => {
+    if (sortKey === key) {
+      setSortAsc(!sortAsc);
+    } else {
+      setSortKey(key);
+      setSortAsc(key !== "date");
+    }
+  };
+  const sortHeader = (label: string, key: SortKey) => (
+    <th key={key} className="px-4 py-3">
+      <button type="button" onClick={() => toggleSort(key)} className="inline-flex items-center gap-1 uppercase hover:text-primary" aria-label={`Sort by ${label}`}>
+        {label}
+        <span aria-hidden="true" className={sortKey === key ? "text-primary" : "text-muted-foreground/50"}>
+          {sortKey === key ? (sortAsc ? "▲" : "▼") : "↕"}
+        </span>
+      </button>
+    </th>
   );
   const withdrawn = rows.filter((r) => r.whip === "Withdrawn").length;
   const resigned = rows.filter((r) => r.whip === "Resigned").length;
