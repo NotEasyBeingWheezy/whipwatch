@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
-import { Bar, BarChart, CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, LabelList, Line, LineChart, XAxis, YAxis } from "recharts";
 import { BarChart3, CalendarDays, Landmark, LineChart as LineIcon, ListChecks, Table2, Users } from "lucide-react";
 import { SiteNav } from "@/components/site-nav";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -116,12 +116,17 @@ function Insights() {
     ? data.partySeries.filter((party) => !hiddenParties.includes(party.key)).map((party) => party.key)
     : series.filter((key) => !hiddenOutcomes.includes(key));
   const chartData = view === "party" ? data.partyYears : outcomeYears;
+  const barData = (byParliament ? (view === "party" ? data.partyParliaments : data.parliaments) : chartData)
+    .map((point) => ({ ...point, visibleTotal: keys.reduce((sum, key) => sum + Number((point as Record<string, unknown>)[key] ?? 0), 0) }));
+  const totalLabels = <LabelList dataKey="visibleTotal" position="top" offset={isMobile && !byParliament ? 12 : 8}
+    angle={isMobile && !byParliament ? -90 : 0} fontSize={isMobile ? 9 : 11} className="fill-foreground font-mono"
+    formatter={(value: unknown) => Number(value) > 0 ? String(value) : ""} />;
   const chartConfig = view === "party" ? partyChartConfig : config;
   const color = (key: string) => view === "party" ? partyChartConfig[key]?.color : config[key as keyof typeof config].color;
   const yearAxis = <XAxis type="number" dataKey="year" domain={[startYear, endYear]} ticks={isMobile ? yearTicks.filter((_, index) => index % 2 === 0) : yearTicks}
     tickFormatter={(value) => String(Math.floor(Number(value)))} tickLine={false} axisLine={false} tickMargin={10} />;
   const parliamentAxis = <XAxis dataKey="label" tickLine={false} axisLine={false} interval={0} angle={isMobile ? -65 : -35} textAnchor="end" tickMargin={10} height={isMobile ? 85 : 30} tick={isMobile ? { fontSize: 10 } : true} />;
-  const parliamentMargin = { top: 16, right: isMobile ? 16 : 24, left: isMobile ? 0 : 30, bottom: isMobile ? 5 : 45 };
+  const parliamentMargin = { top: 32, right: isMobile ? 16 : 24, left: isMobile ? 0 : 30, bottom: isMobile ? 5 : 45 };
   const toggle = (label: string, active: boolean, onClick: () => void, icon: ReactNode, disabled = false) =>
     <Button className="min-w-0 px-2 sm:px-3" size="sm" variant={active ? "default" : "outline"} onClick={onClick} aria-pressed={active} disabled={disabled}>{icon}{label}</Button>;
   const peak = data.years.reduce<InsightGroup | undefined>((best, group) => !best || group.total > best.total ? group : best, undefined);
@@ -163,13 +168,15 @@ function Insights() {
         : <Legend hidden={hiddenOutcomes} onToggle={(key) => setHiddenOutcomes((previous) => toggleKey(previous, key))} />}</div>
       <div className="mt-5 min-w-0" role="region" aria-label={`Whip losses ${view === "party" ? "by party" : "by outcome"} ${chartType === "bars" ? "bar" : "line"} chart`} tabIndex={0}>
         {byParliament ? <ChartContainer config={chartConfig} className="h-80 w-full min-w-0 aspect-auto sm:h-96">
-          {chartType === "bars" ? <BarChart data={view === "party" ? data.partyParliaments : data.parliaments} accessibilityLayer margin={parliamentMargin}>
+          {chartType === "bars" ? <BarChart data={barData} accessibilityLayer margin={parliamentMargin}>
             {parliamentGovernmentAreas(parliamentLabels, parliamentTokens)}
             <CartesianGrid vertical={false} stroke="var(--border)" />
             {parliamentAxis}
             <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
             <ChartTooltip content={<ChartTooltipContent labelFormatter={(_, payload) => payload[0]?.payload.label} />} />
-            {keys.map((key) => <Bar key={key} dataKey={key} stackId="events" fill={color(key)} isAnimationActive={false} />)}
+            {keys.map((key, index) => <Bar key={key} dataKey={key} stackId="events" fill={color(key)} isAnimationActive={false}>
+              {index === keys.length - 1 && totalLabels}
+            </Bar>)}
           </BarChart> : <LineChart data={view === "party" ? data.partyParliaments : data.parliaments} accessibilityLayer margin={parliamentMargin}>
             {parliamentGovernmentAreas(parliamentLabels, parliamentTokens)}
             <CartesianGrid vertical={false} stroke="var(--border)" />
@@ -179,13 +186,15 @@ function Insights() {
             {keys.map((key) => <Line key={key} dataKey={key} type="linear" stroke={color(key)} strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} isAnimationActive={false} />)}
           </LineChart>}
         </ChartContainer> : <ChartContainer config={chartConfig} className="h-80 w-full min-w-0 aspect-auto sm:h-96">
-          {chartType === "bars" ? <BarChart data={chartData} accessibilityLayer margin={{ top: 16, right: 12, left: 0, bottom: 15 }}>
+          {chartType === "bars" ? <BarChart data={barData} accessibilityLayer margin={{ top: 32, right: 12, left: 0, bottom: 15 }}>
             {governmentAreas(startYear, endYear)}
             <CartesianGrid vertical={false} stroke="var(--border)" />
             {yearAxis}
             <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
             <ChartTooltip content={<ChartTooltipContent labelFormatter={(_, payload) => payload[0]?.payload.label} />} />
-            {keys.map((key) => <Bar key={key} dataKey={key} stackId="events" {...(isMobile ? {} : { barSize: 13 })} fill={color(key)} isAnimationActive={false} />)}
+            {keys.map((key, index) => <Bar key={key} dataKey={key} stackId="events" {...(isMobile ? {} : { barSize: 13 })} fill={color(key)} isAnimationActive={false}>
+              {index === keys.length - 1 && totalLabels}
+            </Bar>)}
           </BarChart> : <LineChart data={chartData} accessibilityLayer margin={{ top: 16, right: 12, left: 0, bottom: 15 }}>
             {governmentAreas(startYear, endYear)}
             <CartesianGrid vertical={false} stroke="var(--border)" />
