@@ -1,12 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
-import { CalendarDays, Landmark, Table2, Users } from "lucide-react";
+import { Bar, BarChart, CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import { BarChart3, CalendarDays, Landmark, LineChart as LineIcon, ListChecks, Table2, Users } from "lucide-react";
 import { SiteNav } from "@/components/site-nav";
 import { Button } from "@/components/ui/button";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 import { buildInsights, type InsightGroup } from "@/lib/insights";
-import { PartyTimeline, partyChartConfig } from "@/components/party-timeline";
+import { GovernmentLegend, governmentAreas, partyChartConfig } from "@/components/party-timeline";
 
 export const Route = createFileRoute("/insights")({
   head: () => ({ meta: [
@@ -27,6 +27,10 @@ const config = {
   suspended: { label: "Suspended", color: "var(--chart-4)" },
 } satisfies ChartConfig;
 const series = ["withdrawn", "resigned", "suspended"] as const;
+const outcomeYears = data.years.map((group) => ({ ...group, year: Number(group.label) + 0.5 }));
+const startYear = Number(data.years.at(0)?.label ?? 1979);
+const endYear = Number(data.years.at(-1)?.label ?? 2026) + 1;
+const yearTicks = outcomeYears.filter((_, i) => i % 4 === 0).map((point) => point.year);
 
 function toggleKey(list: string[], key: string) {
   return list.includes(key) ? list.filter((item) => item !== key) : [...list, key];
@@ -97,11 +101,23 @@ function CountsTable({ groups, heading, unknown = false }: { groups: InsightGrou
 }
 
 function Insights() {
-  const [period, setPeriod] = useState<"year" | "parliament" | "party">("year");
+  const [view, setView] = useState<"outcome" | "party">("outcome");
+  const [chartType, setChartType] = useState<"bars" | "lines">("bars");
+  const [group, setGroup] = useState<"year" | "parliament">("year");
   const [showTable, setShowTable] = useState(false);
   const [hiddenOutcomes, setHiddenOutcomes] = useState<string[]>([]);
   const [hiddenParties, setHiddenParties] = useState<string[]>([]);
-  const timeline = period === "parliament" ? data.parliaments : data.years;
+  const byParliament = view === "outcome" && chartType === "bars" && group === "parliament";
+  const keys = view === "party"
+    ? data.partySeries.filter((party) => !hiddenParties.includes(party.key)).map((party) => party.key)
+    : series.filter((key) => !hiddenOutcomes.includes(key));
+  const chartData = view === "party" ? data.partyYears : outcomeYears;
+  const chartConfig = view === "party" ? partyChartConfig : config;
+  const color = (key: string) => view === "party" ? partyChartConfig[key]?.color : config[key as keyof typeof config].color;
+  const yearAxis = <XAxis type="number" dataKey="year" domain={[startYear, endYear]} ticks={yearTicks}
+    tickFormatter={(value) => String(Math.floor(Number(value)))} tickLine={false} axisLine={false} tickMargin={10} />;
+  const toggle = (label: string, active: boolean, onClick: () => void, icon: React.ReactNode, disabled = false) =>
+    <Button size="sm" variant={active ? "default" : "outline"} onClick={onClick} aria-pressed={active} disabled={disabled}>{icon}{label}</Button>;
   const peak = data.years.reduce<InsightGroup | undefined>((best, group) => !best || group.total > best.total ? group : best, undefined);
   return <main className="min-h-screen bg-background text-foreground">
     <header className="border-b-4 border-primary">
@@ -118,38 +134,59 @@ function Insights() {
     <section className="mx-auto max-w-6xl px-6 py-10" aria-labelledby="timeline-title">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div><h2 id="timeline-title" className="font-display text-3xl">Whip losses over time</h2><p className="mt-2 text-sm text-muted-foreground">{peak?.label} has the most recorded events: <strong className="text-foreground">{peak?.total}</strong>. Coverage may be incomplete; {data.years.at(-1)?.label} runs to 20 October.</p></div>
-        <div className="flex flex-wrap gap-1" role="group" aria-label="Timeline grouping">
-          <Button variant={period === "year" ? "default" : "outline"} onClick={() => setPeriod("year")} aria-pressed={period === "year"}><CalendarDays />By year</Button>
-          <Button variant={period === "parliament" ? "default" : "outline"} onClick={() => setPeriod("parliament")} aria-pressed={period === "parliament"}><Landmark />By parliament</Button>
-          <Button variant={period === "party" ? "default" : "outline"} onClick={() => setPeriod("party")} aria-pressed={period === "party"}><Users />By party</Button>
+      </div>
+      <div className="mt-5 flex flex-wrap gap-x-6 gap-y-3">
+        <div className="flex flex-wrap items-center gap-1" role="group" aria-label="Show">
+          <span className="mr-1 font-mono text-xs uppercase text-muted-foreground">Show</span>
+          {toggle("By outcome", view === "outcome", () => setView("outcome"), <ListChecks />)}
+          {toggle("By party", view === "party", () => setView("party"), <Users />)}
+        </div>
+        <div className="flex flex-wrap items-center gap-1" role="group" aria-label="Chart type">
+          <span className="mr-1 font-mono text-xs uppercase text-muted-foreground">Chart</span>
+          {toggle("Bars", chartType === "bars", () => setChartType("bars"), <BarChart3 />)}
+          {toggle("Lines", chartType === "lines", () => setChartType("lines"), <LineIcon />)}
+        </div>
+        <div className="flex flex-wrap items-center gap-1" role="group" aria-label="Group by">
+          <span className="mr-1 font-mono text-xs uppercase text-muted-foreground">Group by</span>
+          {toggle("Year", !byParliament, () => setGroup("year"), <CalendarDays />)}
+          {toggle("Parliament", byParliament, () => setGroup("parliament"), <Landmark />, view === "party" || chartType === "lines")}
         </div>
       </div>
-      <div className="mt-6">{period === "party"
+      <div className="mt-5">{view === "party"
         ? <PartyLegend hidden={hiddenParties} onToggle={(key) => setHiddenParties((previous) => toggleKey(previous, key))} />
         : <Legend hidden={hiddenOutcomes} onToggle={(key) => setHiddenOutcomes((previous) => toggleKey(previous, key))} />}</div>
-      <div className="mt-5 overflow-x-auto" role="region" aria-label={period === "party" ? "Whip losses by year and party chart" : `Whip losses by ${period} chart`} tabIndex={0}>
-        {period === "party" ? <ChartContainer config={partyChartConfig} className="h-80 w-full aspect-auto min-w-[900px]">
-          <BarChart data={data.partyYears} accessibilityLayer margin={{ top: 16, right: 12, left: 0, bottom: 15 }}>
+      <div className="mt-5 overflow-x-auto" role="region" aria-label={`Whip losses ${view === "party" ? "by party" : "by outcome"} ${chartType === "bars" ? "bar" : "line"} chart`} tabIndex={0}>
+        {byParliament ? <ChartContainer config={config} className="h-80 w-full aspect-auto min-w-[700px]">
+          <BarChart data={data.parliaments} accessibilityLayer margin={{ top: 16, right: 12, left: 0, bottom: 45 }}>
             <CartesianGrid vertical={false} stroke="var(--border)" />
-            <XAxis dataKey="label" tickLine={false} axisLine={false} interval={3} tickMargin={10} />
+            <XAxis dataKey="label" tickLine={false} axisLine={false} interval={0} angle={-35} textAnchor="end" tickMargin={10} />
             <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
             <ChartTooltip content={<ChartTooltipContent labelFormatter={(_, payload) => payload[0]?.payload.label} />} />
-            {data.partySeries.filter((party) => !hiddenParties.includes(party.key)).map((party) => <Bar key={party.key} dataKey={party.key} stackId="events" fill={`var(--color-${party.key})`} isAnimationActive={false} />)}
+            {keys.map((key) => <Bar key={key} dataKey={key} stackId="events" fill={`var(--color-${key})`} isAnimationActive={false} />)}
           </BarChart>
-        </ChartContainer> : <ChartContainer config={config} className={`h-80 w-full aspect-auto ${period === "year" ? "min-w-[900px]" : "min-w-[700px]"}`}>
-          <BarChart data={timeline} accessibilityLayer margin={{ top: 16, right: 12, left: 0, bottom: period === "year" ? 15 : 45 }}>
+        </ChartContainer> : <ChartContainer config={chartConfig} className="h-96 w-full aspect-auto min-w-[900px]">
+          {chartType === "bars" ? <BarChart data={chartData} accessibilityLayer margin={{ top: 16, right: 12, left: 0, bottom: 15 }}>
+            {governmentAreas(startYear, endYear)}
             <CartesianGrid vertical={false} stroke="var(--border)" />
-            <XAxis dataKey="label" tickLine={false} axisLine={false} interval={period === "year" ? 3 : 0} angle={period === "year" ? 0 : -35} textAnchor={period === "year" ? "middle" : "end"} tickMargin={10} />
+            {yearAxis}
             <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
             <ChartTooltip content={<ChartTooltipContent labelFormatter={(_, payload) => payload[0]?.payload.label} />} />
-            {series.filter((key) => !hiddenOutcomes.includes(key)).map((key) => <Bar key={key} dataKey={key} stackId="events" fill={`var(--color-${key})`} isAnimationActive={false} />)}
-          </BarChart>
+            {keys.map((key) => <Bar key={key} dataKey={key} stackId="events" barSize={13} fill={color(key)} isAnimationActive={false} />)}
+          </BarChart> : <LineChart data={chartData} accessibilityLayer margin={{ top: 16, right: 12, left: 0, bottom: 15 }}>
+            {governmentAreas(startYear, endYear)}
+            <CartesianGrid vertical={false} stroke="var(--border)" />
+            {yearAxis}
+            <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
+            <ChartTooltip content={<ChartTooltipContent labelFormatter={(_, payload) => payload[0]?.payload.label} />} />
+            {keys.map((key) => <Line key={key} dataKey={key} type="linear" stroke={color(key)} strokeWidth={2} dot={false} activeDot={{ r: 4 }} isAnimationActive={false} />)}
+          </LineChart>}
         </ChartContainer>}
       </div>
+      {!byParliament && <GovernmentLegend />}
+      <p className="mt-3 text-xs text-muted-foreground">Background bands mark UK governments, using appointment dates; the coalition is shown separately. Unspecified whip outcomes are excluded. Government dates: <a className="underline underline-offset-4" href="https://www.gov.uk/government/history/past-prime-ministers" target="_blank" rel="noreferrer">GOV.UK, past prime ministers</a>.</p>
       <Button className="mt-4" variant="outline" onClick={() => setShowTable(!showTable)} aria-expanded={showTable} aria-controls="timeline-data"><Table2 />{showTable ? "Hide figures" : "View figures"}</Button>
-      {showTable && <div id="timeline-data" className="mt-4">{period === "party" ? <PartyYearTable /> : <CountsTable groups={timeline} heading={period === "year" ? "Year" : "Parliament"} />}</div>}
+      {showTable && <div id="timeline-data" className="mt-4">{view === "party" ? <PartyYearTable /> : <CountsTable groups={byParliament ? data.parliaments : data.years} heading={byParliament ? "Parliament" : "Year"} />}</div>
     </section>
-    <PartyTimeline />
     <section className="border-t border-border" aria-labelledby="party-title">
       <div className="mx-auto max-w-6xl px-6 py-10">
         <h2 id="party-title" className="font-display text-3xl">Totals by party</h2>
