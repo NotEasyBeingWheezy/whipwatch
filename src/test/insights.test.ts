@@ -69,4 +69,15 @@ describe("party counts by parliament", () => {
       expect(sum).toBe(data.parliaments.find((g) => g.label === point.label)?.total);
     }
   });
+  it("shades each parliament by the government in office when it began", () => {
+    expect(parliamentGovernment("1979-1983")?.token).toBe("government-conservative");
+    expect(parliamentGovernment("1997-2001")?.token).toBe("government-labour");
+    expect(parliamentGovernment("2010-2015")?.token).toBe("government-coalition");
+    expect(parliamentGovernment("2017-2019")?.token).toBe("government-conservative");
+    expect(parliamentGovernment("2024")?.token).toBe("government-labour");
+    const data = buildInsights();
+    for (const point of data.partyParliaments) {
+      expect(point.government).toBe(parliamentGovernment(point.label)?.token);
+    }
+  });
 });
