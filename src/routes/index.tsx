@@ -103,7 +103,13 @@ function Index() {
                   <td className="px-4 py-3">
                     <span className={`px-2 py-0.5 font-mono text-xs uppercase ${r.whip === "Resigned" ? "bg-accent text-accent-foreground" : "bg-primary text-primary-foreground"}`}>{r.whip || "—"}</span>
                   </td>
-                  <td className="px-4 py-3 whitespace-nowrap">{r.before} → {r.after}</td>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <span className="inline-flex items-center gap-2">
+                      <span aria-hidden="true" className="inline-block h-2.5 w-2.5 shrink-0" style={{ backgroundColor: partyColor(r.before) }} />
+                      {partyDisplayName(r.before)}
+                    </span>
+                    <span className="text-muted-foreground"> → {r.after === "-" ? "—" : partyDisplayName(r.after)}</span>
+                  </td>
                   <td className="px-4 py-3 text-muted-foreground max-w-sm">{r.notes}</td>
                 </tr>
               ))}
