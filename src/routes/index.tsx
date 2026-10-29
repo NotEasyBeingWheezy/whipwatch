@@ -15,7 +15,7 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  validateSearch: (s: Record<string, unknown>): { q?: string; whip?: string; party?: string; year?: number; sort?: string } => ({
+  validateSearch: (s: Record<string, unknown>): { q?: string | undefined; whip?: string | undefined; party?: string | undefined; year?: number | undefined; sort?: string | undefined } => ({
     q: typeof s["q"] === "string" && s["q"] ? s["q"] : undefined,
     whip: typeof s["whip"] === "string" && s["whip"] !== "All" ? s["whip"] : undefined,
     party: typeof s["party"] === "string" && s["party"] !== "All" ? s["party"] : undefined,
