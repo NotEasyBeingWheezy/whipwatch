@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
-import { Bar, BarChart, CartesianGrid, LabelList, Line, LineChart, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import { BarChart3, CalendarDays, Landmark, LineChart as LineIcon, ListChecks, Table2, Users } from "lucide-react";
 import { SiteNav } from "@/components/site-nav";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -60,6 +60,30 @@ function PartyLegend({ hidden, onToggle }: { hidden: string[]; onToggle: (key: s
       <svg width="12" height="12" aria-hidden="true"><rect width="12" height="12" fill={partyChartConfig[party.key]?.color} /></svg>
       {party.label}
     </Button>)}
+  </div>;
+}
+
+type BarTooltipEntry = { dataKey?: string | number; value?: number | string; color?: string; payload?: Record<string, unknown> };
+
+function BarTooltip({ active, payload, config }: { active?: boolean; payload?: BarTooltipEntry[]; config: ChartConfig }) {
+  if (!active || !payload?.length) return null;
+  const point = payload[0]?.payload ?? {};
+  return <div className="grid min-w-[8rem] items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl">
+    <div className="font-medium">{String(point.label ?? "")}</div>
+    <div className="grid gap-1.5">
+      {payload.map((item) => {
+        const key = String(item.dataKey ?? "");
+        return <div key={key} className="flex items-center gap-2">
+          <div className="h-2.5 w-2.5 shrink-0 rounded-[2px]" style={{ backgroundColor: item.color }} />
+          <span className="text-muted-foreground">{config[key]?.label ?? key}</span>
+          <span className="ml-auto pl-4 font-mono font-medium tabular-nums text-foreground">{item.value}</span>
+        </div>;
+      })}
+      <div className="mt-0.5 flex items-center gap-2 border-t border-border/50 pt-1.5">
+        <span className="font-medium">Total</span>
+        <span className="ml-auto pl-4 font-mono font-semibold tabular-nums text-foreground">{String(point.visibleTotal ?? "")}</span>
+      </div>
+    </div>
   </div>;
 }
 
