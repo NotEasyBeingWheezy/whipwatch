@@ -16,11 +16,11 @@ export const Route = createFileRoute("/")({
     ],
   }),
   validateSearch: (s: Record<string, unknown>): { q?: string; whip?: string; party?: string; year?: string; sort?: string } => ({
-    q: typeof s.q === "string" && s.q ? s.q : undefined,
-    whip: typeof s.whip === "string" && s.whip !== "All" ? s.whip : undefined,
-    party: typeof s.party === "string" && s.party !== "All" ? s.party : undefined,
-    year: s.year != null && String(s.year) !== "All" ? String(s.year) : undefined,
-    sort: s.sort === "oldest" ? "oldest" : undefined,
+    q: typeof s["q"] === "string" && s["q"] ? s["q"] : undefined,
+    whip: typeof s["whip"] === "string" && s["whip"] !== "All" ? s["whip"] : undefined,
+    party: typeof s["party"] === "string" && s["party"] !== "All" ? s["party"] : undefined,
+    year: s["year"] != null && String(s["year"]) !== "All" ? String(s["year"]) : undefined,
+    sort: s["sort"] === "oldest" ? "oldest" : undefined,
   }),
   component: Index,
 });
@@ -38,7 +38,7 @@ function Index() {
   const setQ = (v: string) => set({ q: v || undefined });
   const setWhip = (v: string) => set({ whip: v === "All" ? undefined : v });
   const setParty = (v: string) => set({ party: v === "All" ? undefined : v });
-  const setYear = (v: string) => set({ year: v === "All" ? undefined : v });
+  const setYear = (v: string) => set({ year: v === "All" ? undefined : (Number(v) as unknown as string) });
   const setDateAsc = (v: boolean | ((p: boolean) => boolean)) => {
     const next = typeof v === "function" ? v(dateAsc) : v;
     set({ sort: next ? "oldest" : undefined });
