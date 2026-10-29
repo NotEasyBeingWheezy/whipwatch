@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
-import { Bar, BarChart, CartesianGrid, LabelList, Line, LineChart, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import { BarChart3, CalendarDays, Landmark, LineChart as LineIcon, ListChecks, Table2, Users } from "lucide-react";
 import { SiteNav } from "@/components/site-nav";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -63,6 +63,30 @@ function PartyLegend({ hidden, onToggle }: { hidden: string[]; onToggle: (key: s
   </div>;
 }
 
+type BarTooltipEntry = { dataKey?: string | number; value?: number | string; color?: string; payload?: Record<string, unknown> };
+
+function BarTooltip({ active, payload, config }: { active?: boolean; payload?: BarTooltipEntry[]; config: ChartConfig }) {
+  if (!active || !payload?.length) return null;
+  const point = payload[0]?.payload ?? {};
+  return <div className="grid min-w-[8rem] items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl">
+    <div className="font-medium">{String(point["label"] ?? "")}</div>
+    <div className="grid gap-1.5">
+      {payload.map((item) => {
+        const key = String(item.dataKey ?? "");
+        return <div key={key} className="flex items-center gap-2">
+          <div className="h-2.5 w-2.5 shrink-0 rounded-[2px]" style={{ backgroundColor: item.color }} />
+          <span className="text-muted-foreground">{config[key]?.label ?? key}</span>
+          <span className="ml-auto pl-4 font-mono font-medium tabular-nums text-foreground">{item.value}</span>
+        </div>;
+      })}
+      <div className="mt-0.5 flex items-center gap-2 border-t border-border/50 pt-1.5">
+        <span className="font-medium">Total</span>
+        <span className="ml-auto pl-4 font-mono font-semibold tabular-nums text-foreground">{String(point["visibleTotal"] ?? "")}</span>
+      </div>
+    </div>
+  </div>;
+}
+
 function PartyYearTable({ rows = data.partyYears, heading = "Year" }: { rows?: { label: string }[]; heading?: string }) {
   const yearTotal = (point: { label: string }) => data.partySeries.reduce((sum, party) => sum + Number(point[party.key as keyof typeof point] ?? 0), 0);
   return <div className="overflow-x-auto border border-border bg-card">
@@ -118,9 +142,6 @@ function Insights() {
   const chartData = view === "party" ? data.partyYears : outcomeYears;
   const barData = (byParliament ? (view === "party" ? data.partyParliaments : data.parliaments) : chartData)
     .map((point) => ({ ...point, visibleTotal: keys.reduce((sum, key) => sum + Number((point as Record<string, unknown>)[key] ?? 0), 0) }));
-  const totalLabels = <LabelList dataKey="visibleTotal" position="top" offset={isMobile && !byParliament ? 12 : 8}
-    angle={isMobile && !byParliament ? -90 : 0} fontSize={isMobile ? 9 : 11} className="fill-foreground font-mono"
-    formatter={(value: unknown) => Number(value) > 0 ? String(value) : ""} />;
   const chartConfig = view === "party" ? partyChartConfig : config;
   const color = (key: string) => view === "party" ? partyChartConfig[key]?.color : config[key as keyof typeof config].color;
   const yearAxis = <XAxis type="number" dataKey="year" domain={[startYear, endYear]} ticks={isMobile ? yearTicks.filter((_, index) => index % 2 === 0) : yearTicks}
@@ -173,10 +194,8 @@ function Insights() {
             <CartesianGrid vertical={false} stroke="var(--border)" />
             {parliamentAxis}
             <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
-            <ChartTooltip content={<ChartTooltipContent labelFormatter={(_, payload) => payload[0]?.payload.label} />} />
-            {keys.map((key, index) => <Bar key={key} dataKey={key} stackId="events" fill={color(key)} isAnimationActive={false}>
-              {index === keys.length - 1 && totalLabels}
-            </Bar>)}
+            <ChartTooltip content={<BarTooltip config={chartConfig} />} />
+            {keys.map((key) => <Bar key={key} dataKey={key} stackId="events" fill={color(key)} isAnimationActive={false} />)}
           </BarChart> : <LineChart data={view === "party" ? data.partyParliaments : data.parliaments} accessibilityLayer margin={parliamentMargin}>
             {parliamentGovernmentAreas(parliamentLabels, parliamentTokens)}
             <CartesianGrid vertical={false} stroke="var(--border)" />
@@ -186,15 +205,13 @@ function Insights() {
             {keys.map((key) => <Line key={key} dataKey={key} type="linear" stroke={color(key)} strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} isAnimationActive={false} />)}
           </LineChart>}
         </ChartContainer> : <ChartContainer config={chartConfig} className="h-80 w-full min-w-0 aspect-auto sm:h-96">
-          {chartType === "bars" ? <BarChart data={barData} accessibilityLayer margin={{ top: 32, right: 12, left: 0, bottom: 15 }}>
+          {chartType === "bars" ? <BarChart data={barData} accessibilityLayer margin={{ top: 8, right: 12, left: 0, bottom: 15 }}>
             {governmentAreas(startYear, endYear)}
             <CartesianGrid vertical={false} stroke="var(--border)" />
             {yearAxis}
             <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
-            <ChartTooltip content={<ChartTooltipContent labelFormatter={(_, payload) => payload[0]?.payload.label} />} />
-            {keys.map((key, index) => <Bar key={key} dataKey={key} stackId="events" {...(isMobile ? {} : { barSize: 13 })} fill={color(key)} isAnimationActive={false}>
-              {index === keys.length - 1 && totalLabels}
-            </Bar>)}
+            <ChartTooltip content={<BarTooltip config={chartConfig} />} />
+            {keys.map((key) => <Bar key={key} dataKey={key} stackId="events" {...(isMobile ? {} : { barSize: 13 })} fill={color(key)} isAnimationActive={false} />)}
           </BarChart> : <LineChart data={chartData} accessibilityLayer margin={{ top: 16, right: 12, left: 0, bottom: 15 }}>
             {governmentAreas(startYear, endYear)}
             <CartesianGrid vertical={false} stroke="var(--border)" />
