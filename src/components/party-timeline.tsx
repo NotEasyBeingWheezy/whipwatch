@@ -1,3 +1,4 @@
+import { type ReactNode } from "react";
 import { ReferenceArea } from "recharts";
 import { type ChartConfig } from "@/components/ui/chart";
 import { buildInsights, partyColor, partyColorTokens } from "@/lib/insights";
