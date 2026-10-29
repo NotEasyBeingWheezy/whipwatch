@@ -87,7 +87,7 @@ function CountsTable({ groups, heading, unknown = false }: { groups: InsightGrou
 function Insights() {
   const [period, setPeriod] = useState<"year" | "parliament" | "party">("year");
   const [showTable, setShowTable] = useState(false);
-  const timeline = period === "year" ? data.years : period === "parliament" ? data.parliaments : data.parties.filter((party) => party.total > 0);
+  const timeline = period === "parliament" ? data.parliaments : data.years;
   const peak = data.years.reduce<InsightGroup | undefined>((best, group) => !best || group.total > best.total ? group : best, undefined);
   return <main className="min-h-screen bg-background text-foreground">
     <header className="border-b-4 border-primary">
@@ -110,9 +110,17 @@ function Insights() {
           <Button variant={period === "party" ? "default" : "outline"} onClick={() => setPeriod("party")} aria-pressed={period === "party"}><Users />By party</Button>
         </div>
       </div>
-      <div className="mt-6"><Legend /></div>
-      <div className="mt-5 overflow-x-auto" role="region" aria-label={`Whip losses by ${period} chart`} tabIndex={0}>
-        <ChartContainer config={config} className={`h-80 w-full aspect-auto ${period === "year" ? "min-w-[900px]" : "min-w-[700px]"}`}>
+      <div className="mt-6">{period === "party" ? <PartyLegend /> : <Legend />}</div>
+      <div className="mt-5 overflow-x-auto" role="region" aria-label={period === "party" ? "Whip losses by year and party chart" : `Whip losses by ${period} chart`} tabIndex={0}>
+        {period === "party" ? <ChartContainer config={partyChartConfig} className="h-80 w-full aspect-auto min-w-[900px]">
+          <BarChart data={data.partyYears} accessibilityLayer margin={{ top: 16, right: 12, left: 0, bottom: 15 }}>
+            <CartesianGrid vertical={false} stroke="var(--border)" />
+            <XAxis dataKey="label" tickLine={false} axisLine={false} interval={3} tickMargin={10} />
+            <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
+            <ChartTooltip content={<ChartTooltipContent labelFormatter={(_, payload) => payload[0]?.payload.label} />} />
+            {data.partySeries.map((party) => <Bar key={party.key} dataKey={party.key} stackId="events" fill={`var(--color-${party.key})`} isAnimationActive={false} />)}
+          </BarChart>
+        </ChartContainer> : <ChartContainer config={config} className={`h-80 w-full aspect-auto ${period === "year" ? "min-w-[900px]" : "min-w-[700px]"}`}>
           <BarChart data={timeline} accessibilityLayer margin={{ top: 16, right: 12, left: 0, bottom: period === "year" ? 15 : 45 }}>
             <CartesianGrid vertical={false} stroke="var(--border)" />
             <XAxis dataKey="label" tickLine={false} axisLine={false} interval={period === "year" ? 3 : 0} angle={period === "year" ? 0 : -35} textAnchor={period === "year" ? "middle" : "end"} tickMargin={10} />
@@ -120,7 +128,7 @@ function Insights() {
             <ChartTooltip content={<ChartTooltipContent labelFormatter={(_, payload) => payload[0]?.payload.label} />} />
             {series.map((key) => <Bar key={key} dataKey={key} stackId="events" fill={`var(--color-${key})`} isAnimationActive={false} />)}
           </BarChart>
-        </ChartContainer>
+        </ChartContainer>}
       </div>
       <Button className="mt-4" variant="outline" onClick={() => setShowTable(!showTable)} aria-expanded={showTable} aria-controls="timeline-data"><Table2 />{showTable ? "Hide figures" : "View figures"}</Button>
       {showTable && <div id="timeline-data" className="mt-4"><CountsTable groups={timeline} heading={period === "year" ? "Year" : period === "parliament" ? "Parliament" : "Party"} /></div>}
