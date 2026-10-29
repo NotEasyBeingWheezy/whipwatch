@@ -3,6 +3,7 @@ import { useState, type ReactNode } from "react";
 import { Bar, BarChart, CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import { BarChart3, CalendarDays, Landmark, LineChart as LineIcon, ListChecks, Table2, Users } from "lucide-react";
 import { SiteNav } from "@/components/site-nav";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 import { buildInsights, parliamentGovernment, type InsightGroup } from "@/lib/insights";
@@ -103,6 +104,7 @@ function CountsTable({ groups, heading, unknown = false }: { groups: InsightGrou
 }
 
 function Insights() {
+  const isMobile = useIsMobile();
   const [view, setView] = useState<"outcome" | "party">("outcome");
   const [chartType, setChartType] = useState<"bars" | "lines">("bars");
   const [group, setGroup] = useState<"year" | "parliament">("year");
@@ -116,11 +118,12 @@ function Insights() {
   const chartData = view === "party" ? data.partyYears : outcomeYears;
   const chartConfig = view === "party" ? partyChartConfig : config;
   const color = (key: string) => view === "party" ? partyChartConfig[key]?.color : config[key as keyof typeof config].color;
-  const yearAxis = <XAxis type="number" dataKey="year" domain={[startYear, endYear]} ticks={yearTicks}
+  const yearAxis = <XAxis type="number" dataKey="year" domain={[startYear, endYear]} ticks={isMobile ? yearTicks.filter((_, index) => index % 2 === 0) : yearTicks}
     tickFormatter={(value) => String(Math.floor(Number(value)))} tickLine={false} axisLine={false} tickMargin={10} />;
-  const parliamentAxis = <XAxis dataKey="label" tickLine={false} axisLine={false} interval={0} angle={-35} textAnchor="end" tickMargin={10} />;
+  const parliamentAxis = <XAxis dataKey="label" tickLine={false} axisLine={false} interval={0} angle={isMobile ? -65 : -35} textAnchor="end" tickMargin={10} height={isMobile ? 85 : 30} tick={isMobile ? { fontSize: 10 } : undefined} />;
+  const parliamentMargin = { top: 16, right: isMobile ? 16 : 24, left: isMobile ? 0 : 30, bottom: isMobile ? 5 : 45 };
   const toggle = (label: string, active: boolean, onClick: () => void, icon: ReactNode, disabled = false) =>
-    <Button size="sm" variant={active ? "default" : "outline"} onClick={onClick} aria-pressed={active} disabled={disabled}>{icon}{label}</Button>;
+    <Button className="min-w-0 px-2 sm:px-3" size="sm" variant={active ? "default" : "outline"} onClick={onClick} aria-pressed={active} disabled={disabled}>{icon}{label}</Button>;
   const peak = data.years.reduce<InsightGroup | undefined>((best, group) => !best || group.total > best.total ? group : best, undefined);
   return <main className="min-h-screen bg-background text-foreground">
     <header className="border-b-4 border-primary">
@@ -135,22 +138,22 @@ function Insights() {
       </div>
     </header>
     <section className="mx-auto max-w-6xl px-6 py-10" aria-labelledby="timeline-title">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div><h2 id="timeline-title" className="font-display text-3xl">Whip losses over time</h2><p className="mt-2 text-sm text-muted-foreground">{peak?.label} has the most recorded events: <strong className="text-foreground">{peak?.total}</strong>. Coverage may be incomplete; {data.years.at(-1)?.label} runs to 20 October.</p></div>
+      <div className="min-w-0">
+        <div className="min-w-0"><h2 id="timeline-title" className="font-display text-3xl">Whip losses over time</h2><p className="mt-2 text-sm text-muted-foreground">{peak?.label} has the most recorded events: <strong className="text-foreground">{peak?.total}</strong>. Coverage may be incomplete; {data.years.at(-1)?.label} runs to 20 October.</p></div>
       </div>
-      <div className="mt-5 flex flex-wrap gap-x-6 gap-y-3">
-        <div className="flex flex-wrap items-center gap-1" role="group" aria-label="Show">
-          <span className="mr-1 font-mono text-xs uppercase text-muted-foreground">Show</span>
+      <div className="mt-5 grid min-w-0 gap-3 sm:flex sm:flex-wrap sm:gap-x-6">
+        <div className="grid min-w-0 grid-cols-2 items-center gap-1 sm:flex" role="group" aria-label="Show">
+          <span className="col-span-2 mr-1 font-mono text-xs uppercase text-muted-foreground">Show</span>
           {toggle("By outcome", view === "outcome", () => setView("outcome"), <ListChecks />)}
           {toggle("By party", view === "party", () => setView("party"), <Users />)}
         </div>
-        <div className="flex flex-wrap items-center gap-1" role="group" aria-label="Chart type">
-          <span className="mr-1 font-mono text-xs uppercase text-muted-foreground">Chart</span>
+        <div className="grid min-w-0 grid-cols-2 items-center gap-1 sm:flex" role="group" aria-label="Chart type">
+          <span className="col-span-2 mr-1 font-mono text-xs uppercase text-muted-foreground">Chart</span>
           {toggle("Bars", chartType === "bars", () => setChartType("bars"), <BarChart3 />)}
           {toggle("Lines", chartType === "lines", () => setChartType("lines"), <LineIcon />)}
         </div>
-        <div className="flex flex-wrap items-center gap-1" role="group" aria-label="Group by">
-          <span className="mr-1 font-mono text-xs uppercase text-muted-foreground">Group by</span>
+        <div className="grid min-w-0 grid-cols-2 items-center gap-1 sm:flex" role="group" aria-label="Group by">
+          <span className="col-span-2 mr-1 font-mono text-xs uppercase text-muted-foreground">Group by</span>
           {toggle("Year", !byParliament, () => setGroup("year"), <CalendarDays />)}
           {toggle("Parliament", byParliament, () => setGroup("parliament"), <Landmark />)}
         </div>
@@ -158,16 +161,16 @@ function Insights() {
       <div className="mt-5">{view === "party"
         ? <PartyLegend hidden={hiddenParties} onToggle={(key) => setHiddenParties((previous) => toggleKey(previous, key))} />
         : <Legend hidden={hiddenOutcomes} onToggle={(key) => setHiddenOutcomes((previous) => toggleKey(previous, key))} />}</div>
-      <div className="mt-5 overflow-x-auto" role="region" aria-label={`Whip losses ${view === "party" ? "by party" : "by outcome"} ${chartType === "bars" ? "bar" : "line"} chart`} tabIndex={0}>
-        {byParliament ? <ChartContainer config={chartConfig} className="h-96 w-full aspect-auto min-w-[700px]">
-          {chartType === "bars" ? <BarChart data={view === "party" ? data.partyParliaments : data.parliaments} accessibilityLayer margin={{ top: 16, right: 12, left: 30, bottom: 45 }}>
+      <div className="mt-5 min-w-0" role="region" aria-label={`Whip losses ${view === "party" ? "by party" : "by outcome"} ${chartType === "bars" ? "bar" : "line"} chart`} tabIndex={0}>
+        {byParliament ? <ChartContainer config={chartConfig} className="h-80 w-full min-w-0 aspect-auto sm:h-96">
+          {chartType === "bars" ? <BarChart data={view === "party" ? data.partyParliaments : data.parliaments} accessibilityLayer margin={parliamentMargin}>
             {parliamentGovernmentAreas(parliamentLabels, parliamentTokens)}
             <CartesianGrid vertical={false} stroke="var(--border)" />
             {parliamentAxis}
             <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
             <ChartTooltip content={<ChartTooltipContent labelFormatter={(_, payload) => payload[0]?.payload.label} />} />
             {keys.map((key) => <Bar key={key} dataKey={key} stackId="events" fill={color(key)} isAnimationActive={false} />)}
-          </BarChart> : <LineChart data={view === "party" ? data.partyParliaments : data.parliaments} accessibilityLayer margin={{ top: 16, right: 24, left: 30, bottom: 45 }}>
+          </BarChart> : <LineChart data={view === "party" ? data.partyParliaments : data.parliaments} accessibilityLayer margin={parliamentMargin}>
             {parliamentGovernmentAreas(parliamentLabels, parliamentTokens)}
             <CartesianGrid vertical={false} stroke="var(--border)" />
             {parliamentAxis}
@@ -175,14 +178,14 @@ function Insights() {
             <ChartTooltip content={<ChartTooltipContent labelFormatter={(_, payload) => payload[0]?.payload.label} />} />
             {keys.map((key) => <Line key={key} dataKey={key} type="linear" stroke={color(key)} strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} isAnimationActive={false} />)}
           </LineChart>}
-        </ChartContainer> : <ChartContainer config={chartConfig} className="h-96 w-full aspect-auto min-w-[900px]">
+        </ChartContainer> : <ChartContainer config={chartConfig} className="h-80 w-full min-w-0 aspect-auto sm:h-96">
           {chartType === "bars" ? <BarChart data={chartData} accessibilityLayer margin={{ top: 16, right: 12, left: 0, bottom: 15 }}>
             {governmentAreas(startYear, endYear)}
             <CartesianGrid vertical={false} stroke="var(--border)" />
             {yearAxis}
             <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
             <ChartTooltip content={<ChartTooltipContent labelFormatter={(_, payload) => payload[0]?.payload.label} />} />
-            {keys.map((key) => <Bar key={key} dataKey={key} stackId="events" barSize={13} fill={color(key)} isAnimationActive={false} />)}
+            {keys.map((key) => <Bar key={key} dataKey={key} stackId="events" barSize={isMobile ? undefined : 13} fill={color(key)} isAnimationActive={false} />)}
           </BarChart> : <LineChart data={chartData} accessibilityLayer margin={{ top: 16, right: 12, left: 0, bottom: 15 }}>
             {governmentAreas(startYear, endYear)}
             <CartesianGrid vertical={false} stroke="var(--border)" />
