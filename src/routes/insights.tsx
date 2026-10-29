@@ -194,10 +194,8 @@ function Insights() {
             <CartesianGrid vertical={false} stroke="var(--border)" />
             {parliamentAxis}
             <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
-            <ChartTooltip content={<ChartTooltipContent labelFormatter={(_, payload) => payload[0]?.payload.label} />} />
-            {keys.map((key, index) => <Bar key={key} dataKey={key} stackId="events" fill={color(key)} isAnimationActive={false}>
-              {index === keys.length - 1 && totalLabels}
-            </Bar>)}
+            <ChartTooltip content={<BarTooltip config={chartConfig} />} />
+            {keys.map((key) => <Bar key={key} dataKey={key} stackId="events" fill={color(key)} isAnimationActive={false} />)}
           </BarChart> : <LineChart data={view === "party" ? data.partyParliaments : data.parliaments} accessibilityLayer margin={parliamentMargin}>
             {parliamentGovernmentAreas(parliamentLabels, parliamentTokens)}
             <CartesianGrid vertical={false} stroke="var(--border)" />
@@ -207,15 +205,13 @@ function Insights() {
             {keys.map((key) => <Line key={key} dataKey={key} type="linear" stroke={color(key)} strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} isAnimationActive={false} />)}
           </LineChart>}
         </ChartContainer> : <ChartContainer config={chartConfig} className="h-80 w-full min-w-0 aspect-auto sm:h-96">
-          {chartType === "bars" ? <BarChart data={barData} accessibilityLayer margin={{ top: 32, right: 12, left: 0, bottom: 15 }}>
+          {chartType === "bars" ? <BarChart data={barData} accessibilityLayer margin={{ top: 8, right: 12, left: 0, bottom: 15 }}>
             {governmentAreas(startYear, endYear)}
             <CartesianGrid vertical={false} stroke="var(--border)" />
             {yearAxis}
             <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
-            <ChartTooltip content={<ChartTooltipContent labelFormatter={(_, payload) => payload[0]?.payload.label} />} />
-            {keys.map((key, index) => <Bar key={key} dataKey={key} stackId="events" {...(isMobile ? {} : { barSize: 13 })} fill={color(key)} isAnimationActive={false}>
-              {index === keys.length - 1 && totalLabels}
-            </Bar>)}
+            <ChartTooltip content={<BarTooltip config={chartConfig} />} />
+            {keys.map((key) => <Bar key={key} dataKey={key} stackId="events" {...(isMobile ? {} : { barSize: 13 })} fill={color(key)} isAnimationActive={false} />)}
           </BarChart> : <LineChart data={chartData} accessibilityLayer margin={{ top: 16, right: 12, left: 0, bottom: 15 }}>
             {governmentAreas(startYear, endYear)}
             <CartesianGrid vertical={false} stroke="var(--border)" />
