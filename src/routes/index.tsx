@@ -95,6 +95,14 @@ function Index() {
           <select value={year} onChange={(e) => setYear(e.target.value)} className="border border-input bg-card px-3 py-2" aria-label="Filter by year">
             {years.map((y) => <option key={y} value={y}>{y === "All" ? "All years" : y}</option>)}
           </select>
+          <button
+            type="button"
+            onClick={() => navigate({ search: {}, replace: true })}
+            disabled={!q && whip === "All" && party === "All" && year === "All" && !dateAsc}
+            className="border border-input bg-card px-3 py-2 font-mono text-xs uppercase hover:border-primary hover:text-primary disabled:opacity-40 disabled:pointer-events-none"
+          >
+            Clear filters
+          </button>
         </div>
         <p className="font-mono text-xs text-muted-foreground mb-3">{list.length} records · {list.filter((r) => r.older).length} older records</p>
         <div className="border border-border bg-card">
