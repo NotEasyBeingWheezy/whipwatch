@@ -99,6 +99,8 @@ function CountsTable({ groups, heading, unknown = false }: { groups: InsightGrou
 function Insights() {
   const [period, setPeriod] = useState<"year" | "parliament" | "party">("year");
   const [showTable, setShowTable] = useState(false);
+  const [hiddenOutcomes, setHiddenOutcomes] = useState<string[]>([]);
+  const [hiddenParties, setHiddenParties] = useState<string[]>([]);
   const timeline = period === "parliament" ? data.parliaments : data.years;
   const peak = data.years.reduce<InsightGroup | undefined>((best, group) => !best || group.total > best.total ? group : best, undefined);
   return <main className="min-h-screen bg-background text-foreground">
