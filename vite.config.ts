@@ -7,9 +7,18 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 export default defineConfig({
+  vite: {
+    // GitHub Pages serves the site under /whipwatch/; the deploy workflow sets
+    // VITE_BASE_PATH=/whipwatch/ so asset and link URLs are prefixed correctly.
+    // Locally and in the Lovable preview this stays "/".
+    base: process.env.VITE_BASE_PATH ?? "/",
+  },
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
     server: { entry: "server" },
+    // Prerender all routes to static HTML so the site can be hosted on GitHub Pages.
+    pages: [{ path: "/" }, { path: "/insights" }, { path: "/about" }],
+    prerender: { enabled: true, autoStaticPathsDiscovery: false },
   },
 });
