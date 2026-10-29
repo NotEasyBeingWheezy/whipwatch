@@ -67,6 +67,9 @@ function Index() {
           <select value={party} onChange={(e) => setParty(e.target.value)} className="border border-input bg-card px-3 py-2">
             {parties.map((p) => <option key={p}>{p}</option>)}
           </select>
+          <select value={year} onChange={(e) => setYear(e.target.value)} className="border border-input bg-card px-3 py-2" aria-label="Filter by year">
+            {years.map((y) => <option key={y} value={y}>{y === "All" ? "All years" : y}</option>)}
+          </select>
         </div>
         <p className="font-mono text-xs text-muted-foreground mb-3">{list.length} records · {list.filter((r) => r.older).length} older records</p>
         <div className="overflow-x-auto border border-border bg-card">
