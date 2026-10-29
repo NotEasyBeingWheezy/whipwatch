@@ -5,9 +5,16 @@ export type Counts = { withdrawn: number; resigned: number; suspended: number; u
 export type InsightGroup = Counts & { label: string };
 
 const partyNames: Record<string, string> = {
-  Lab: "Labour", Con: "Conservative", LD: "Liberal Democrats", SNP: "SNP",
+  Lab: "Labour", Con: "Conservative", LD: "Liberal Democrats", "Lib Dem": "Liberal Democrats", SNP: "SNP",
   SDLP: "SDLP", DUP: "DUP", UUP: "UUP", PC: "Plaid Cymru",
+  "Lab (Co-op)": "Labour (Co-op)", CUK: "Change UK", "Reform UK": "Reform UK",
+  Liberal: "Liberal", "Liberal Unionist": "Liberal Unionist", SDP: "SDP", SF: "Sinn Féin",
+  Ind: "Independent", "Deputy Speaker": "Deputy Speaker",
 };
+
+export function partyDisplayName(source: string): string {
+  return partyNames[source] ?? source;
+}
 
 function emptyCounts(): Counts {
   return { withdrawn: 0, resigned: 0, suspended: 0, unspecified: 0, total: 0 };
