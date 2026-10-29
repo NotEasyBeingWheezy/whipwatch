@@ -17,9 +17,11 @@ export default defineConfig({
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
     server: { entry: "server" },
+    // Matches vite's base so the prerender crawler requests base-prefixed paths
+    // (the server 307-redirects unprefixed paths to the base, which the crawler
+    // would otherwise follow in a loop).
+    router: { basepath: (process.env.VITE_BASE_PATH ?? "/").replace(/\/$/, "") || "/" },
     // Prerender all routes to static HTML so the site can be hosted on GitHub Pages.
-    // The router renders with basepath "/" during prerender (see src/router.tsx),
-    // so these paths stay unprefixed and each route lands at <route>/index.html.
     pages: [{ path: "/" }, { path: "/insights" }, { path: "/about" }],
     prerender: { enabled: true, autoStaticPathsDiscovery: false },
   },
