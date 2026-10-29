@@ -36,7 +36,7 @@ describe("WhipWatch insights", () => {
   it("counts explicit whip losses by year, including zero-event years", () => {
     const result = buildInsights([record("Withdrawn", "Con", "Ind", "2017-01-01"), record("Resigned", "Lab", "Ind", "2019-01-01"), record("Suspended", "Lab", "Ind", "2019-02-01")]);
     expect(result.years.map(({ label, total }) => ({ label, total }))).toEqual([{ label: "2017", total: 1 }, { label: "2018", total: 0 }, { label: "2019", total: 2 }]);
-    expect(result.parliaments[0]).toMatchObject({ label: "2017-2019", total: 3, withdrawn: 1, resigned: 1, suspended: 1 });
+    expect(result.parliaments[0]).toMatchObject({ label: "2017–2019", total: 3, withdrawn: 1, resigned: 1, suspended: 1 });
   });
   it("assigns totals to the party before the event, not the destination", () => {
     const result = buildInsights([record("Resigned", "Lab", "Con", "2019-01-01")]);
@@ -62,6 +62,20 @@ describe("WhipWatch insights", () => {
   });
 });
 describe("party counts by parliament", () => {
+  it("combines the 2017 and 2017-2019 entries into one parliament with 60 events", () => {
+    const data = buildInsights();
+    const groups = data.parliaments.filter((group) => group.label.startsWith("2017"));
+    expect(groups).toHaveLength(1);
+    expect(groups[0]).toMatchObject({ label: "2017–2019", total: 60 });
+    const points = data.partyParliaments.filter((point) => point.label.startsWith("2017"));
+    expect(points).toHaveLength(1);
+    const point = points[0];
+    if (!point) throw new Error("Missing combined parliament");
+    expect(point.label).toBe("2017–2019");
+    expect(data.partySeries.reduce((sum, party) => sum + Number((point as Record<string, unknown>)[party.key] ?? 0), 0)).toBe(60);
+    expect(point.government).toBe("government-conservative");
+    expect(data.years.find((year) => year.label === "2019")?.total).toBe(48);
+  });
   it("match each parliament's whip-loss total", () => {
     const data = buildInsights();
     for (const point of data.partyParliaments) {

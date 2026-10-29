@@ -72,7 +72,10 @@ export function buildInsights(records: RecordRow[] = rows) {
       addRecord(group, row);
       years.set(year, group);
     }
-    const parliament = row.parliament || "Unspecified";
+    // Normalize the two source labels without altering the underlying records.
+    const parliament = row.parliament === "2017" || row.parliament === "2017-2019"
+      ? "2017–2019"
+      : row.parliament || "Unspecified";
     const group = parliaments.get(parliament) ?? { label: parliament, ...emptyCounts() };
     addRecord(group, row);
     parliaments.set(parliament, group);
