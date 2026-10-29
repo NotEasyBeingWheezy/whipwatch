@@ -105,7 +105,13 @@ function Index() {
         <div className="overflow-x-auto border border-border bg-card">
           <table className="w-full text-sm">
             <thead className="bg-secondary text-left font-mono text-xs uppercase text-secondary-foreground">
-              <tr>{["Date", "Member", "Constituency", "Whip", "Party", "Notes"].map((h) => <th key={h} className="px-4 py-3">{h}</th>)}</tr>
+              <tr>
+                {sortHeader("Date", "date")}
+                {sortHeader("Member", "member")}
+                {["Constituency", "Whip"].map((h) => <th key={h} className="px-4 py-3">{h}</th>)}
+                {sortHeader("Party", "party")}
+                <th className="px-4 py-3">Notes</th>
+              </tr>
             </thead>
             <tbody>
               {list.map((r, i) => (
