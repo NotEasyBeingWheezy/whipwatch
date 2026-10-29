@@ -11,7 +11,7 @@ export default defineConfig({
     // GitHub Pages serves the site under /whipwatch/; the deploy workflow sets
     // VITE_BASE_PATH=/whipwatch/ so asset and link URLs are prefixed correctly.
     // Locally and in the Lovable preview this stays "/".
-    base: process.env.VITE_BASE_PATH ?? "/",
+    base: process.env["VITE_BASE_PATH"] ?? "/",
   },
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
