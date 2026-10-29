@@ -28,19 +28,31 @@ const config = {
 } satisfies ChartConfig;
 const series = ["withdrawn", "resigned", "suspended"] as const;
 
-function Legend() {
-  return <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-muted-foreground">
-    <span className="flex items-center gap-2"><i className="size-2.5 bg-primary" />Withdrawn</span>
-    <span className="flex items-center gap-2"><i className="size-2.5 bg-chart-2" />Resigned</span>
-    <span className="flex items-center gap-2"><i className="size-2.5 bg-chart-4" />Suspended</span>
+function toggleKey(list: string[], key: string) {
+  return list.includes(key) ? list.filter((item) => item !== key) : [...list, key];
+}
+
+function Legend({ hidden, onToggle }: { hidden: string[]; onToggle: (key: string) => void }) {
+  return <div className="flex flex-wrap gap-2" role="group" aria-label="Outcome series">
+    {series.map((key) => <Button key={key} variant="ghost" size="sm"
+      className={hidden.includes(key) ? "opacity-40" : ""}
+      aria-pressed={!hidden.includes(key)}
+      onClick={() => onToggle(key)}>
+      <svg width="20" height="8" aria-hidden="true"><path d="M0 4H20" stroke={config[key].color} strokeWidth="3" /></svg>
+      {config[key].label}
+    </Button>)}
   </div>;
 }
 
-function PartyLegend() {
-  return <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-muted-foreground">
-    {data.partySeries.map((party) => <span key={party.key} className="flex items-center gap-2">
-      <i className="size-2.5" style={{ backgroundColor: partyChartConfig[party.key]?.color }} />{party.label}
-    </span>)}
+function PartyLegend({ hidden, onToggle }: { hidden: string[]; onToggle: (key: string) => void }) {
+  return <div className="flex flex-wrap gap-2" role="group" aria-label="Party series">
+    {data.partySeries.map((party) => <Button key={party.key} variant="ghost" size="sm"
+      className={hidden.includes(party.key) ? "opacity-40" : ""}
+      aria-pressed={!hidden.includes(party.key)}
+      onClick={() => onToggle(party.key)}>
+      <svg width="20" height="8" aria-hidden="true"><path d="M0 4H20" stroke={partyChartConfig[party.key]?.color} strokeWidth="3" /></svg>
+      {party.label}
+    </Button>)}
   </div>;
 }
 
