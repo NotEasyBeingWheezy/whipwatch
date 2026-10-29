@@ -154,7 +154,7 @@ function Insights() {
       <div className="mx-auto max-w-6xl px-6 py-10">
         <h2 id="party-title" className="font-display text-3xl">Totals by party</h2>
         <p className="mt-2 max-w-2xl text-sm text-muted-foreground">Attributed to the party before each event. Source categories are kept separate, including Labour and Labour (Co-op). Unspecified outcomes are not counted as whip losses.</p>
-        <div className="mt-6"><Legend /></div>
+        <div className="mt-6"><Legend hidden={[]} onToggle={() => {}} /></div>
         <div className="mt-5 overflow-x-auto" role="region" aria-label="Whip losses by party chart" tabIndex={0}>
           <ChartContainer config={config} className="h-[520px] w-full min-w-[600px] aspect-auto">
             <BarChart data={data.parties.filter((party) => party.total > 0)} layout="vertical" accessibilityLayer margin={{ left: 0, right: 24, top: 8, bottom: 8 }}>
