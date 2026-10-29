@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
-import { CalendarDays, Landmark, Table2 } from "lucide-react";
+import { CalendarDays, Landmark, Table2, Users } from "lucide-react";
 import { SiteNav } from "@/components/site-nav";
 import { Button } from "@/components/ui/button";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
@@ -53,9 +53,9 @@ function CountsTable({ groups, heading, unknown = false }: { groups: InsightGrou
 }
 
 function Insights() {
-  const [period, setPeriod] = useState<"year" | "parliament">("year");
+  const [period, setPeriod] = useState<"year" | "parliament" | "party">("year");
   const [showTable, setShowTable] = useState(false);
-  const timeline = period === "year" ? data.years : data.parliaments;
+  const timeline = period === "year" ? data.years : period === "parliament" ? data.parliaments : data.parties.filter((party) => party.total > 0);
   const peak = data.years.reduce<InsightGroup | undefined>((best, group) => !best || group.total > best.total ? group : best, undefined);
   return <main className="min-h-screen bg-background text-foreground">
     <header className="border-b-4 border-primary">
