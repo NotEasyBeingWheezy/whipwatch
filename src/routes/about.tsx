@@ -1,5 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteNav } from "@/components/site-nav";
+import { rows } from "@/lib/records";
+
+const count = (w: string) => rows.filter((r) => r.whip === w).length;
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -20,12 +23,23 @@ function About() {
   return (
     <main className="min-h-screen bg-background text-foreground">
       <header className="border-b-4 border-primary">
-        <div className="mx-auto max-w-3xl px-6 py-12">
+        <div className="mx-auto max-w-6xl px-6 py-12">
           <div className="mb-6">
             <SiteNav />
           </div>
           <p className="font-mono text-xs uppercase tracking-[0.3em] text-primary">About</p>
-          <h1 className="mt-3 font-display text-6xl leading-none">WhipWatch</h1>
+          <h1 className="mt-3 font-display text-6xl md:text-8xl leading-none">WhipWatch</h1>
+          <p className="mt-4 max-w-xl text-muted-foreground">
+            What the site tracks, where the data comes from, and how to read it.
+          </p>
+          <dl className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-2xl">
+            {([["Total", rows.length], ["Withdrawn", count("Withdrawn")], ["Resigned", count("Resigned")], ["Suspended", count("Suspended")]] as const).map(([l, n]) => (
+              <div key={l} className="border-l-2 border-border pl-4">
+                <dd className="font-display text-4xl text-primary">{n}</dd>
+                <dt className="mt-1 font-mono text-xs uppercase text-muted-foreground">{l}</dt>
+              </div>
+            ))}
+          </dl>
         </div>
       </header>
 
