@@ -81,11 +81,13 @@ function Index() {
           <table className="w-full text-sm">
             <thead className="bg-secondary text-left font-mono text-xs uppercase text-secondary-foreground">
               <tr>
-                {sortHeader("Date", "date")}
-                {sortHeader("Member", "member")}
-                {["Constituency", "Whip"].map((h) => <th key={h} className="px-4 py-3">{h}</th>)}
-                {sortHeader("Party", "party")}
-                <th className="px-4 py-3">Notes</th>
+                <th className="px-4 py-3">
+                  <button type="button" onClick={() => setDateAsc(!dateAsc)} className="inline-flex items-center gap-1 uppercase hover:text-primary" aria-label="Sort by date">
+                    Date
+                    <span aria-hidden="true" className="text-primary">{dateAsc ? "▲" : "▼"}</span>
+                  </button>
+                </th>
+                {["Member", "Constituency", "Whip", "Party", "Notes"].map((h) => <th key={h} className="px-4 py-3">{h}</th>)}
               </tr>
             </thead>
             <tbody>
