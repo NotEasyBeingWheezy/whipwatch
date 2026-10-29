@@ -18,13 +18,14 @@ export function governmentAreas(start: number, end: number) {
   });
 }
 
-// One shaded band per parliament category, exactly one category wide so
-// neighbouring bands never overlap and darken each other.
+// One shaded band per parliament category. Inner edges sit on neighbouring
+// categories; outer edges clamp numerically to the chart boundary. The band
+// colours are translucent, so the slight overlap at boundaries stays subtle.
 export function parliamentGovernmentAreas(labels: string[], tokens: (string | undefined)[]) {
   return labels.map((label, i) => {
     const token = tokens[i];
-    return token ? <ReferenceArea key={label} x1={i - 0.5} x2={i + 0.5}
-      fill={`var(--${token})`} fillOpacity={1} stroke="none" /> : null;
+    return token ? <ReferenceArea key={label} x1={i === 0 ? -0.5 : labels[i - 1]!} x2={i === labels.length - 1 ? labels.length - 0.5 : labels[i + 1]!}
+      fill={`var(--${token})`} fillOpacity={0.55} stroke="none" /> : null;
   });
 }
 
