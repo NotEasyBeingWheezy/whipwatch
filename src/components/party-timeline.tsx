@@ -23,7 +23,7 @@ export function governmentAreas(start: number, end: number) {
 export function parliamentGovernmentAreas(labels: string[], tokens: (string | undefined)[]) {
   return labels.map((label, i) => {
     const token = tokens[i];
-    return token ? <ReferenceArea key={label} x1={i === 0 ? -0.5 : labels[i - 1]} x2={i === labels.length - 1 ? labels.length - 0.5 : labels[i + 1]}
+    return token ? <ReferenceArea key={label} x1={i === 0 ? -0.5 : labels[i - 1]!} x2={i === labels.length - 1 ? labels.length - 0.5 : labels[i + 1]!}
       fill={`var(--${token})`} fillOpacity={1} stroke="none" /> : null;
   });
 }
