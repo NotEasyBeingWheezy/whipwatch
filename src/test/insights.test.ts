@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildInsights } from "@/lib/insights";
+import { buildInsights, parliamentGovernment } from "@/lib/insights";
 import { rows, type RecordRow } from "@/lib/records";
 import { chartDate, governmentPeriods } from "@/lib/government-periods";
 
