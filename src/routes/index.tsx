@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteNav } from "@/components/site-nav";
 import { useMemo, useState } from "react";
 import { rows, formatRecordDate } from "@/lib/records";
+import { partyColor, partyDisplayName } from "@/lib/insights";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -69,8 +70,8 @@ function Index() {
           <select value={whip} onChange={(e) => setWhip(e.target.value)} className="border border-input bg-card px-3 py-2">
             {["All", "Withdrawn", "Resigned", "Suspended"].map((w) => <option key={w}>{w}</option>)}
           </select>
-          <select value={party} onChange={(e) => setParty(e.target.value)} className="border border-input bg-card px-3 py-2">
-            {parties.map((p) => <option key={p}>{p}</option>)}
+          <select value={party} onChange={(e) => setParty(e.target.value)} className="border border-input bg-card px-3 py-2" aria-label="Filter by party">
+            {parties.map((p) => <option key={p} value={p}>{p === "All" ? "All parties" : partyDisplayName(p)}</option>)}
           </select>
           <select value={year} onChange={(e) => setYear(e.target.value)} className="border border-input bg-card px-3 py-2" aria-label="Filter by year">
             {years.map((y) => <option key={y} value={y}>{y === "All" ? "All years" : y}</option>)}
