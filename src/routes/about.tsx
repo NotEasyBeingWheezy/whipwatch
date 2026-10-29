@@ -8,9 +8,9 @@ export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
       { title: "About — WhipWatch" },
-      { name: "description", content: "What WhipWatch tracks, where the data comes from, and how to read each column." },
+      { name: "description", content: "What WhipWatch tracks, where its data comes from and how to read it." },
       { property: "og:title", content: "About — WhipWatch" },
-      { property: "og:description", content: "What WhipWatch tracks, where the data comes from, and how to read each column." },
+      { property: "og:description", content: "What WhipWatch tracks, where its data comes from and how to read it." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -27,10 +27,10 @@ function About() {
           <div className="mb-6">
             <SiteNav />
           </div>
-          <p className="font-mono text-xs uppercase tracking-[0.3em] text-primary">About · How to read the data</p>
+          <p className="font-mono text-xs uppercase tracking-[0.3em] text-primary">About · How to read the whip records</p>
           <h1 className="mt-3 font-display text-6xl md:text-8xl leading-none">WhipWatch</h1>
           <p className="mt-4 max-w-xl text-muted-foreground">
-            What WhipWatch tracks, where the data comes from, and how to read each column.
+            What WhipWatch tracks, where its data comes from and how to read it.
           </p>
           <dl className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-2xl">
             {([["Total", rows.length], ["Withdrawn", count("Withdrawn")], ["Resigned", count("Resigned")], ["Suspended", count("Suspended")]] as const).map(([l, n]) => (
