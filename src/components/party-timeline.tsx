@@ -6,14 +6,14 @@ import { buildInsights } from "@/lib/insights";
 import { chartDate, governmentPeriods } from "@/lib/government-periods";
 
 const data = buildInsights();
-const tokens: Record<string, string> = {
+export const partyColorTokens: Record<string, string> = {
   Lab: "party-labour", Con: "party-conservative", LD: "party-libdem", "Lib Dem": "party-libdem", SNP: "party-snp",
   CUK: "party-cuk", "Lab (Co-op)": "party-coop", UUP: "party-uup", DUP: "party-dup",
   "Reform UK": "party-reform", "Deputy Speaker": "party-speaker", Ind: "party-independent",
   PC: "party-plaid", SDLP: "party-sdlp", SF: "party-sf",
 };
-const config = Object.fromEntries(data.partySeries.map((party) => [party.key, {
-  label: party.label, color: `var(--${tokens[party.source] ?? "chart-5"})`,
+export const partyChartConfig = Object.fromEntries(data.partySeries.map((party) => [party.key, {
+  label: party.label, color: `var(--${partyColorTokens[party.source] ?? "chart-5"})`,
 }])) satisfies ChartConfig;
 
 export function PartyTimeline() {
@@ -33,7 +33,7 @@ export function PartyTimeline() {
           className={hidden.includes(party.key) ? "opacity-40" : ""}
           aria-pressed={!hidden.includes(party.key)}
           onClick={() => setHidden((previous) => previous.includes(party.key) ? previous.filter((key) => key !== party.key) : [...previous, party.key])}>
-          <svg width="20" height="8" aria-hidden="true"><path d="M0 4H20" stroke={config[party.key]?.color} strokeWidth="3" /></svg>
+          <svg width="20" height="8" aria-hidden="true"><path d="M0 4H20" stroke={partyChartConfig[party.key]?.color} strokeWidth="3" /></svg>
           {party.label}
         </Button>)}
       </div>
@@ -52,7 +52,7 @@ export function PartyTimeline() {
             <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
             <ChartTooltip content={<ChartTooltipContent labelFormatter={(_, payload) => payload[0]?.payload.label} />} />
             {data.partySeries.filter((party) => !hidden.includes(party.key)).map((party) => <Line
-              key={party.key} dataKey={party.key} type="linear" stroke={config[party.key]?.color}
+              key={party.key} dataKey={party.key} type="linear" stroke={partyChartConfig[party.key]?.color}
               strokeWidth={2} dot={false} activeDot={{ r: 4 }} isAnimationActive={false} />)}
           </LineChart>
         </ChartContainer>
