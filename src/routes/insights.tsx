@@ -6,6 +6,7 @@ import { SiteNav } from "@/components/site-nav";
 import { Button } from "@/components/ui/button";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 import { buildInsights, type InsightGroup } from "@/lib/insights";
+import { PartyTimeline } from "@/components/party-timeline";
 
 export const Route = createFileRoute("/insights")({
   head: () => ({ meta: [
@@ -91,6 +92,7 @@ function Insights() {
       <Button className="mt-4" variant="outline" onClick={() => setShowTable(!showTable)} aria-expanded={showTable} aria-controls="timeline-data"><Table2 />{showTable ? "Hide figures" : "View figures"}</Button>
       {showTable && <div id="timeline-data" className="mt-4"><CountsTable groups={timeline} heading={period === "year" ? "Year" : "Parliament"} /></div>}
     </section>
+    <PartyTimeline />
     <section className="border-t border-border" aria-labelledby="party-title">
       <div className="mx-auto max-w-6xl px-6 py-10">
         <h2 id="party-title" className="font-display text-3xl">Totals by party</h2>

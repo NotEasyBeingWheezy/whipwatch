@@ -1,12 +1,38 @@
 import { describe, expect, it } from "vitest";
 import { buildInsights } from "@/lib/insights";
 import { rows, type RecordRow } from "@/lib/records";
+import { chartDate, governmentPeriods } from "@/lib/government-periods";
 
 function record(whip: string, before: string, after: string, date: string): RecordRow {
   return { whip, before, after, date, parliament: "2017-2019", member: "Example", constituency: "Example", notes: "" };
 }
 
 describe("WhipWatch insights", () => {
+  it("groups annual party lines by before-party and fills missing years with zero", () => {
+    const result = buildInsights([record("Withdrawn", "Con", "Lab", "2017-01-01"), record("Resigned", "Lab", "Con", "2019-01-01"), record("", "Con", "Ind", "1902-11-01")]);
+    const con = result.partySeries.find((party) => party.source === "Con");
+    const lab = result.partySeries.find((party) => party.source === "Lab");
+    if (!con || !lab) throw new Error("Missing party series");
+    expect(result.partyYears).toEqual([
+      { year: 2017.5, label: "2017", [con.key]: 1, [lab.key]: 0 },
+      { year: 2018.5, label: "2018", [con.key]: 0, [lab.key]: 0 },
+      { year: 2019.5, label: "2019", [con.key]: 0, [lab.key]: 1 },
+    ]);
+  });
+  it("reconciles each party line with its recorded total", () => {
+    const result = buildInsights();
+    for (const party of result.partySeries) {
+      expect(result.partyYears.reduce((sum, point) => sum + Number(point[party.key as keyof typeof point]), 0)).toBe(party.total);
+    }
+  });
+  it("uses government appointment dates and keeps the 2010–2015 coalition separate", () => {
+    expect(governmentPeriods.map(({ start, end }) => [start, end])).toEqual([
+      ["1979-05-04", "1997-05-02"], ["1997-05-02", "2010-05-11"],
+      ["2010-05-11", "2015-05-08"], ["2015-05-08", "2024-07-05"], ["2024-07-05", null],
+    ]);
+    expect(governmentPeriods[2]?.label).toBe("Conservative–Lib Dem coalition");
+    expect(chartDate("2024-07-05")).toBeCloseTo(2024 + 186 / 366);
+  });
   it("counts explicit whip losses by year, including zero-event years", () => {
     const result = buildInsights([record("Withdrawn", "Con", "Ind", "2017-01-01"), record("Resigned", "Lab", "Ind", "2019-01-01"), record("Suspended", "Lab", "Ind", "2019-02-01")]);
     expect(result.years.map(({ label, total }) => ({ label, total }))).toEqual([{ label: "2017", total: 1 }, { label: "2018", total: 0 }, { label: "2019", total: 2 }]);
