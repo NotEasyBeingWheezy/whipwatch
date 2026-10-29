@@ -38,7 +38,7 @@ export function PartyTimeline() {
         </Button>)}
       </div>
       <div className="mt-4 overflow-x-auto" role="region" aria-label="Annual whip losses by party line chart" tabIndex={0}>
-        <ChartContainer config={config} className="h-96 w-full min-w-[900px] aspect-auto">
+        <ChartContainer config={partyChartConfig} className="h-96 w-full min-w-[900px] aspect-auto">
           <LineChart data={data.partyYears} accessibilityLayer margin={{ top: 20, right: 20, left: 0, bottom: 16 }}>
             {governmentPeriods.map((government) => {
               const from = Math.max(start, chartDate(government.start));
