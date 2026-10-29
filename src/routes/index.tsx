@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteNav } from "@/components/site-nav";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { rows, formatRecordDate } from "@/lib/records";
 import { partyColor, partyDisplayName } from "@/lib/insights";
 
