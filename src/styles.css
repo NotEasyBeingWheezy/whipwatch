@@ -98,6 +98,23 @@
   --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
+  --party-labour: oklch(0.55 0.21 25);
+  --party-conservative: oklch(0.52 0.17 255);
+  --party-libdem: oklch(0.65 0.16 75);
+  --party-snp: oklch(0.64 0.13 105);
+  --party-cuk: oklch(0.52 0.10 190);
+  --party-coop: oklch(0.54 0.18 350);
+  --party-uup: oklch(0.53 0.13 220);
+  --party-dup: oklch(0.44 0.14 15);
+  --party-reform: oklch(0.62 0.12 205);
+  --party-speaker: oklch(0.47 0 0);
+  --party-independent: oklch(0.57 0.05 65);
+  --party-plaid: oklch(0.49 0.14 145);
+  --party-sdlp: oklch(0.63 0.11 155);
+  --party-sf: oklch(0.39 0.08 165);
+  --government-conservative: oklch(0.52 0.17 255 / 7%);
+  --government-labour: oklch(0.55 0.21 25 / 7%);
+  --government-coalition: oklch(0.65 0.16 75 / 9%);
 }
 
 .dark {
@@ -133,6 +150,23 @@
   --sidebar-accent-foreground: oklch(0.98 0 0);
   --sidebar-border: oklch(1 0 0 / 12%);
   --sidebar-ring: oklch(0.6 0 0);
+  --party-labour: oklch(0.72 0.19 25);
+  --party-conservative: oklch(0.73 0.14 255);
+  --party-libdem: oklch(0.8 0.15 75);
+  --party-snp: oklch(0.83 0.13 105);
+  --party-cuk: oklch(0.76 0.10 190);
+  --party-coop: oklch(0.74 0.17 350);
+  --party-uup: oklch(0.77 0.11 220);
+  --party-dup: oklch(0.63 0.14 15);
+  --party-reform: oklch(0.83 0.12 205);
+  --party-speaker: oklch(0.85 0 0);
+  --party-independent: oklch(0.77 0.05 65);
+  --party-plaid: oklch(0.7 0.14 145);
+  --party-sdlp: oklch(0.85 0.11 155);
+  --party-sf: oklch(0.61 0.08 165);
+  --government-conservative: oklch(0.73 0.14 255 / 10%);
+  --government-labour: oklch(0.72 0.19 25 / 10%);
+  --government-coalition: oklch(0.8 0.15 75 / 10%);
 }
 
 @layer base {
