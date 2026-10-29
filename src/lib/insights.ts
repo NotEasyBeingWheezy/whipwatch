@@ -1,4 +1,11 @@
 import { rows, type RecordRow } from "@/lib/records";
+import { governmentFor } from "@/lib/government-periods";
+
+// Government in office when a parliament label ("2010-2015", "2024") began.
+export function parliamentGovernment(label: string) {
+  const year = Number(label.slice(0, 4));
+  return /^\d{4}$/.test(label.slice(0, 4)) ? governmentFor(year + 0.5) : undefined;
+}
 
 export const outcomes = ["Withdrawn", "Resigned", "Suspended"] as const;
 export type Counts = { withdrawn: number; resigned: number; suspended: number; unspecified: number; total: number };
