@@ -61,3 +61,12 @@ describe("WhipWatch insights", () => {
     expect(result.totals.unspecified).toBe(rows.filter((r) => !["Withdrawn", "Resigned", "Suspended"].includes(r.whip)).length);
   });
 });
+describe("party counts by parliament", () => {
+  it("match each parliament's whip-loss total", () => {
+    const data = buildInsights();
+    for (const point of data.partyParliaments) {
+      const sum = data.partySeries.reduce((s, p) => s + Number((point as Record<string, unknown>)[p.key] ?? 0), 0);
+      expect(sum).toBe(data.parliaments.find((g) => g.label === point.label)?.total);
+    }
+  });
+});

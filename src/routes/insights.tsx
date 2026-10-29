@@ -60,17 +60,17 @@ function PartyLegend({ hidden, onToggle }: { hidden: string[]; onToggle: (key: s
   </div>;
 }
 
-function PartyYearTable() {
-  const yearTotal = (point: (typeof data.partyYears)[number]) => data.partySeries.reduce((sum, party) => sum + Number(point[party.key as keyof typeof point] ?? 0), 0);
+function PartyYearTable({ rows = data.partyYears, heading = "Year" }: { rows?: { label: string }[]; heading?: string }) {
+  const yearTotal = (point: { label: string }) => data.partySeries.reduce((sum, party) => sum + Number(point[party.key as keyof typeof point] ?? 0), 0);
   return <div className="overflow-x-auto border border-border bg-card">
     <table className="w-full text-sm tabular-nums">
-      <caption className="sr-only">Recorded whip losses by year and party</caption>
+      <caption className="sr-only">Recorded whip losses by {heading.toLowerCase()} and party</caption>
       <thead className="bg-secondary text-secondary-foreground font-mono text-xs uppercase">
-        <tr><th scope="col" className="px-4 py-3 text-left">Year</th>
+        <tr><th scope="col" className="px-4 py-3 text-left">{heading}</th>
           {data.partySeries.map((party) => <th scope="col" key={party.key} className="px-4 py-3 text-right whitespace-nowrap">{party.label}</th>)}
           <th scope="col" className="px-4 py-3 text-right whitespace-nowrap">Whip losses</th></tr>
       </thead>
-      <tbody>{data.partyYears.map((point) => <tr key={point.label} className="border-t border-border hover:bg-muted">
+      <tbody>{rows.map((point) => <tr key={point.label} className="border-t border-border hover:bg-muted">
         <th scope="row" className="px-4 py-3 text-left font-medium whitespace-nowrap">{point.label}</th>
         {data.partySeries.map((party) => <td key={party.key} className="px-4 py-3 text-right font-mono text-muted-foreground">{Number(point[party.key as keyof typeof point] ?? 0)}</td>)}
         <td className="px-4 py-3 text-right font-mono font-semibold text-primary">{yearTotal(point)}</td>
@@ -107,7 +107,7 @@ function Insights() {
   const [showTable, setShowTable] = useState(false);
   const [hiddenOutcomes, setHiddenOutcomes] = useState<string[]>([]);
   const [hiddenParties, setHiddenParties] = useState<string[]>([]);
-  const byParliament = view === "outcome" && chartType === "bars" && group === "parliament";
+  const byParliament = group === "parliament";
   const keys = view === "party"
     ? data.partySeries.filter((party) => !hiddenParties.includes(party.key)).map((party) => party.key)
     : series.filter((key) => !hiddenOutcomes.includes(key));
@@ -116,6 +116,7 @@ function Insights() {
   const color = (key: string) => view === "party" ? partyChartConfig[key]?.color : config[key as keyof typeof config].color;
   const yearAxis = <XAxis type="number" dataKey="year" domain={[startYear, endYear]} ticks={yearTicks}
     tickFormatter={(value) => String(Math.floor(Number(value)))} tickLine={false} axisLine={false} tickMargin={10} />;
+  const parliamentAxis = <XAxis dataKey="label" tickLine={false} axisLine={false} interval={0} angle={-35} textAnchor="end" tickMargin={10} />;
   const toggle = (label: string, active: boolean, onClick: () => void, icon: ReactNode, disabled = false) =>
     <Button size="sm" variant={active ? "default" : "outline"} onClick={onClick} aria-pressed={active} disabled={disabled}>{icon}{label}</Button>;
   const peak = data.years.reduce<InsightGroup | undefined>((best, group) => !best || group.total > best.total ? group : best, undefined);
@@ -149,21 +150,27 @@ function Insights() {
         <div className="flex flex-wrap items-center gap-1" role="group" aria-label="Group by">
           <span className="mr-1 font-mono text-xs uppercase text-muted-foreground">Group by</span>
           {toggle("Year", !byParliament, () => setGroup("year"), <CalendarDays />)}
-          {toggle("Parliament", byParliament, () => setGroup("parliament"), <Landmark />, view === "party" || chartType === "lines")}
+          {toggle("Parliament", byParliament, () => setGroup("parliament"), <Landmark />)}
         </div>
       </div>
       <div className="mt-5">{view === "party"
         ? <PartyLegend hidden={hiddenParties} onToggle={(key) => setHiddenParties((previous) => toggleKey(previous, key))} />
         : <Legend hidden={hiddenOutcomes} onToggle={(key) => setHiddenOutcomes((previous) => toggleKey(previous, key))} />}</div>
       <div className="mt-5 overflow-x-auto" role="region" aria-label={`Whip losses ${view === "party" ? "by party" : "by outcome"} ${chartType === "bars" ? "bar" : "line"} chart`} tabIndex={0}>
-        {byParliament ? <ChartContainer config={config} className="h-80 w-full aspect-auto min-w-[700px]">
-          <BarChart data={data.parliaments} accessibilityLayer margin={{ top: 16, right: 12, left: 0, bottom: 45 }}>
+        {byParliament ? <ChartContainer config={chartConfig} className="h-96 w-full aspect-auto min-w-[700px]">
+          {chartType === "bars" ? <BarChart data={view === "party" ? data.partyParliaments : data.parliaments} accessibilityLayer margin={{ top: 16, right: 12, left: 30, bottom: 45 }}>
             <CartesianGrid vertical={false} stroke="var(--border)" />
-            <XAxis dataKey="label" tickLine={false} axisLine={false} interval={0} angle={-35} textAnchor="end" tickMargin={10} />
+            {parliamentAxis}
             <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
             <ChartTooltip content={<ChartTooltipContent labelFormatter={(_, payload) => payload[0]?.payload.label} />} />
-            {keys.map((key) => <Bar key={key} dataKey={key} stackId="events" fill={`var(--color-${key})`} isAnimationActive={false} />)}
-          </BarChart>
+            {keys.map((key) => <Bar key={key} dataKey={key} stackId="events" fill={color(key)} isAnimationActive={false} />)}
+          </BarChart> : <LineChart data={view === "party" ? data.partyParliaments : data.parliaments} accessibilityLayer margin={{ top: 16, right: 24, left: 30, bottom: 45 }}>
+            <CartesianGrid vertical={false} stroke="var(--border)" />
+            {parliamentAxis}
+            <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
+            <ChartTooltip content={<ChartTooltipContent labelFormatter={(_, payload) => payload[0]?.payload.label} />} />
+            {keys.map((key) => <Line key={key} dataKey={key} type="linear" stroke={color(key)} strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} isAnimationActive={false} />)}
+          </LineChart>}
         </ChartContainer> : <ChartContainer config={chartConfig} className="h-96 w-full aspect-auto min-w-[900px]">
           {chartType === "bars" ? <BarChart data={chartData} accessibilityLayer margin={{ top: 16, right: 12, left: 0, bottom: 15 }}>
             {governmentAreas(startYear, endYear)}
@@ -183,9 +190,9 @@ function Insights() {
         </ChartContainer>}
       </div>
       {!byParliament && <GovernmentLegend />}
-      <p className="mt-3 text-xs text-muted-foreground">Background bands mark UK governments, using appointment dates; the coalition is shown separately. Unspecified whip outcomes are excluded. Government dates: <a className="underline underline-offset-4" href="https://www.gov.uk/government/history/past-prime-ministers" target="_blank" rel="noreferrer">GOV.UK, past prime ministers</a>.</p>
+      {!byParliament && <p className="mt-3 text-xs text-muted-foreground">Background bands mark UK governments, using appointment dates; the coalition is shown separately. Unspecified whip outcomes are excluded. Government dates: <a className="underline underline-offset-4" href="https://www.gov.uk/government/history/past-prime-ministers" target="_blank" rel="noreferrer">GOV.UK, past prime ministers</a>.</p>}
       <Button className="mt-4" variant="outline" onClick={() => setShowTable(!showTable)} aria-expanded={showTable} aria-controls="timeline-data"><Table2 />{showTable ? "Hide figures" : "View figures"}</Button>
-      {showTable && <div id="timeline-data" className="mt-4">{view === "party" ? <PartyYearTable /> : <CountsTable groups={byParliament ? data.parliaments : data.years} heading={byParliament ? "Parliament" : "Year"} />}</div>}
+      {showTable && <div id="timeline-data" className="mt-4">{view === "party" ? <PartyYearTable rows={byParliament ? data.partyParliaments : data.partyYears} heading={byParliament ? "Parliament" : "Year"} /> : <CountsTable groups={byParliament ? data.parliaments : data.years} heading={byParliament ? "Parliament" : "Year"} />}</div>}
     </section>
     <section className="border-t border-border" aria-labelledby="party-title">
       <div className="mx-auto max-w-6xl px-6 py-10">
