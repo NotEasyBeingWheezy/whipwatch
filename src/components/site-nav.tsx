@@ -1,8 +1,9 @@
 import { Link } from "@tanstack/react-router";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export function SiteNav() {
   return (
-    <nav className="flex gap-6 font-mono text-xs uppercase tracking-widest">
+    <nav className="flex items-center gap-6 font-mono text-xs uppercase tracking-widest">
       <Link
         to="/"
         activeProps={{ className: "border-b-2 border-primary pb-1 text-primary" }}
@@ -25,6 +26,7 @@ export function SiteNav() {
       >
         About
       </Link>
+      <ThemeToggle />
     </nav>
   );
 }
