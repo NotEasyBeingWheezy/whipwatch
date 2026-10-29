@@ -142,7 +142,7 @@ function Insights() {
             <XAxis dataKey="label" tickLine={false} axisLine={false} interval={period === "year" ? 3 : 0} angle={period === "year" ? 0 : -35} textAnchor={period === "year" ? "middle" : "end"} tickMargin={10} />
             <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
             <ChartTooltip content={<ChartTooltipContent labelFormatter={(_, payload) => payload[0]?.payload.label} />} />
-            {series.map((key) => <Bar key={key} dataKey={key} stackId="events" fill={`var(--color-${key})`} isAnimationActive={false} />)}
+            {series.filter((key) => !hiddenOutcomes.includes(key)).map((key) => <Bar key={key} dataKey={key} stackId="events" fill={`var(--color-${key})`} isAnimationActive={false} />)}
           </BarChart>
         </ChartContainer>}
       </div>
