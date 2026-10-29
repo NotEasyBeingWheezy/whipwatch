@@ -19,10 +19,11 @@ export function governmentAreas(start: number, end: number) {
 }
 
 // One shaded band per parliament category, spanning half a category either side.
+// Numeric edges clamp the first and last bands to the chart boundary.
 export function parliamentGovernmentAreas(labels: string[], tokens: (string | undefined)[]) {
   return labels.map((label, i) => {
     const token = tokens[i];
-    return token ? <ReferenceArea key={label} x1={labels[i - 1] ?? label} x2={labels[i + 1] ?? label}
+    return token ? <ReferenceArea key={label} x1={i === 0 ? -0.5 : labels[i - 1]!} x2={i === labels.length - 1 ? labels.length - 0.5 : labels[i + 1]!}
       fill={`var(--${token})`} fillOpacity={1} stroke="none" /> : null;
   });
 }
