@@ -71,14 +71,14 @@ function Index() {
           <p className="mt-4 max-w-xl text-muted-foreground">
             Every MP who had the party whip withdrawn, suspended or who resigned it.
           </p>
-          <div className="mt-8 grid grid-cols-3 gap-px bg-border max-w-xl">
+          <dl className="mt-8 grid grid-cols-3 gap-6 max-w-xl">
             {[["Total", rows.length], ["Withdrawn", withdrawn], ["Resigned", resigned]].map(([l, n]) => (
-              <div key={l} className="bg-card p-4">
-                <div className="font-display text-4xl text-primary">{n}</div>
-                <div className="font-mono text-xs uppercase text-muted-foreground">{l}</div>
+              <div key={l} className="border-l-2 border-border pl-4">
+                <dd className="font-display text-4xl text-primary">{n}</dd>
+                <dt className="mt-1 font-mono text-xs uppercase text-muted-foreground">{l}</dt>
               </div>
             ))}
-          </div>
+          </dl>
         </div>
       </header>
 
