@@ -2,18 +2,13 @@ import { useState } from "react";
 import { CartesianGrid, Line, LineChart, ReferenceArea, XAxis, YAxis } from "recharts";
 import { Button } from "@/components/ui/button";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
-import { buildInsights } from "@/lib/insights";
+import { buildInsights, partyColor, partyColorTokens } from "@/lib/insights";
 import { chartDate, governmentPeriods } from "@/lib/government-periods";
 
 const data = buildInsights();
-export const partyColorTokens: Record<string, string> = {
-  Lab: "party-labour", Con: "party-conservative", LD: "party-libdem", "Lib Dem": "party-libdem", SNP: "party-snp",
-  CUK: "party-cuk", "Lab (Co-op)": "party-coop", UUP: "party-uup", DUP: "party-dup",
-  "Reform UK": "party-reform", "Deputy Speaker": "party-speaker", Ind: "party-independent",
-  PC: "party-plaid", SDLP: "party-sdlp", SF: "party-sf",
-};
+export { partyColorTokens };
 export const partyChartConfig = Object.fromEntries(data.partySeries.map((party) => [party.key, {
-  label: party.label, color: `var(--${partyColorTokens[party.source] ?? "chart-5"})`,
+  label: party.label, color: partyColor(party.source),
 }])) satisfies ChartConfig;
 
 export function PartyTimeline() {
