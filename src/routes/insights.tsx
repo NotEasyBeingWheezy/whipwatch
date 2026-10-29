@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Bar, BarChart, CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import { BarChart3, CalendarDays, Landmark, LineChart as LineIcon, ListChecks, Table2, Users } from "lucide-react";
 import { SiteNav } from "@/components/site-nav";
@@ -116,7 +116,7 @@ function Insights() {
   const color = (key: string) => view === "party" ? partyChartConfig[key]?.color : config[key as keyof typeof config].color;
   const yearAxis = <XAxis type="number" dataKey="year" domain={[startYear, endYear]} ticks={yearTicks}
     tickFormatter={(value) => String(Math.floor(Number(value)))} tickLine={false} axisLine={false} tickMargin={10} />;
-  const toggle = (label: string, active: boolean, onClick: () => void, icon: React.ReactNode, disabled = false) =>
+  const toggle = (label: string, active: boolean, onClick: () => void, icon: ReactNode, disabled = false) =>
     <Button size="sm" variant={active ? "default" : "outline"} onClick={onClick} aria-pressed={active} disabled={disabled}>{icon}{label}</Button>;
   const peak = data.years.reduce<InsightGroup | undefined>((best, group) => !best || group.total > best.total ? group : best, undefined);
   return <main className="min-h-screen bg-background text-foreground">
