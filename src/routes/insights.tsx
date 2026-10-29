@@ -69,7 +69,7 @@ function BarTooltip({ active, payload, config }: { active?: boolean; payload?: B
   if (!active || !payload?.length) return null;
   const point = payload[0]?.payload ?? {};
   return <div className="grid min-w-[8rem] items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl">
-    <div className="font-medium">{String(point.label ?? "")}</div>
+    <div className="font-medium">{String(point["label"] ?? "")}</div>
     <div className="grid gap-1.5">
       {payload.map((item) => {
         const key = String(item.dataKey ?? "");
@@ -81,7 +81,7 @@ function BarTooltip({ active, payload, config }: { active?: boolean; payload?: B
       })}
       <div className="mt-0.5 flex items-center gap-2 border-t border-border/50 pt-1.5">
         <span className="font-medium">Total</span>
-        <span className="ml-auto pl-4 font-mono font-semibold tabular-nums text-foreground">{String(point.visibleTotal ?? "")}</span>
+        <span className="ml-auto pl-4 font-mono font-semibold tabular-nums text-foreground">{String(point["visibleTotal"] ?? "")}</span>
       </div>
     </div>
   </div>;
