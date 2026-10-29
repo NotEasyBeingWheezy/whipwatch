@@ -31,9 +31,10 @@ export function parliamentGovernmentAreas(labels: string[], tokens: (string | un
     if (i < labels.length && tokens[i] === tokens[runStart]) continue;
     const token = tokens[runStart];
     if (token) {
+      // Category axes only render label coordinates, so use the run's own
+      // first/last labels (numeric clamps like -0.5 render nothing).
       areas.push(<ReferenceArea key={`${token}-${runStart}`}
-        x1={runStart === 0 ? -0.5 : labels[runStart]!}
-        x2={i === labels.length ? labels.length - 0.5 : labels[i - 1]!}
+        x1={labels[runStart]!} x2={labels[i - 1]!}
         fill={`var(--${token})`} fillOpacity={0.55} stroke="none" />);
     }
     runStart = i;
