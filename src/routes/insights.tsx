@@ -185,7 +185,7 @@ function Insights() {
       {!byParliament && <GovernmentLegend />}
       <p className="mt-3 text-xs text-muted-foreground">Background bands mark UK governments, using appointment dates; the coalition is shown separately. Unspecified whip outcomes are excluded. Government dates: <a className="underline underline-offset-4" href="https://www.gov.uk/government/history/past-prime-ministers" target="_blank" rel="noreferrer">GOV.UK, past prime ministers</a>.</p>
       <Button className="mt-4" variant="outline" onClick={() => setShowTable(!showTable)} aria-expanded={showTable} aria-controls="timeline-data"><Table2 />{showTable ? "Hide figures" : "View figures"}</Button>
-      {showTable && <div id="timeline-data" className="mt-4">{view === "party" ? <PartyYearTable /> : <CountsTable groups={byParliament ? data.parliaments : data.years} heading={byParliament ? "Parliament" : "Year"} />}</div>
+      {showTable && <div id="timeline-data" className="mt-4">{view === "party" ? <PartyYearTable /> : <CountsTable groups={byParliament ? data.parliaments : data.years} heading={byParliament ? "Parliament" : "Year"} />}</div>}
     </section>
     <section className="border-t border-border" aria-labelledby="party-title">
       <div className="mx-auto max-w-6xl px-6 py-10">
