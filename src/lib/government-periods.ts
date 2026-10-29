@@ -14,3 +14,9 @@ export const governmentPeriods = [
   { label: "Conservative", start: "2015-05-08", end: "2024-07-05", token: "government-conservative" },
   { label: "Labour", start: "2024-07-05", end: null, token: "government-labour" },
 ];
+
+// Government in office at a fractional chart date (see chartDate).
+export function governmentFor(position: number) {
+  return governmentPeriods.find((government) =>
+    position >= chartDate(government.start) && (!government.end || position < chartDate(government.end)));
+}

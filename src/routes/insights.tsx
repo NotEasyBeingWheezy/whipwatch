@@ -5,8 +5,8 @@ import { BarChart3, CalendarDays, Landmark, LineChart as LineIcon, ListChecks, T
 import { SiteNav } from "@/components/site-nav";
 import { Button } from "@/components/ui/button";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
-import { buildInsights, type InsightGroup } from "@/lib/insights";
-import { GovernmentLegend, governmentAreas, partyChartConfig } from "@/components/party-timeline";
+import { buildInsights, parliamentGovernment, type InsightGroup } from "@/lib/insights";
+import { GovernmentLegend, governmentAreas, parliamentGovernmentAreas, partyChartConfig } from "@/components/party-timeline";
 
 export const Route = createFileRoute("/insights")({
   head: () => ({ meta: [
@@ -31,6 +31,8 @@ const outcomeYears = data.years.map((group) => ({ ...group, year: Number(group.l
 const startYear = Number(data.years.at(0)?.label ?? 1979);
 const endYear = Number(data.years.at(-1)?.label ?? 2026) + 1;
 const yearTicks = outcomeYears.filter((_, i) => i % 4 === 0).map((point) => point.year);
+const parliamentLabels = data.parliaments.map((group) => group.label);
+const parliamentTokens = parliamentLabels.map((label) => parliamentGovernment(label)?.token);
 
 function toggleKey(list: string[], key: string) {
   return list.includes(key) ? list.filter((item) => item !== key) : [...list, key];
@@ -159,12 +161,14 @@ function Insights() {
       <div className="mt-5 overflow-x-auto" role="region" aria-label={`Whip losses ${view === "party" ? "by party" : "by outcome"} ${chartType === "bars" ? "bar" : "line"} chart`} tabIndex={0}>
         {byParliament ? <ChartContainer config={chartConfig} className="h-96 w-full aspect-auto min-w-[700px]">
           {chartType === "bars" ? <BarChart data={view === "party" ? data.partyParliaments : data.parliaments} accessibilityLayer margin={{ top: 16, right: 12, left: 30, bottom: 45 }}>
+            {parliamentGovernmentAreas(parliamentLabels, parliamentTokens)}
             <CartesianGrid vertical={false} stroke="var(--border)" />
             {parliamentAxis}
             <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
             <ChartTooltip content={<ChartTooltipContent labelFormatter={(_, payload) => payload[0]?.payload.label} />} />
             {keys.map((key) => <Bar key={key} dataKey={key} stackId="events" fill={color(key)} isAnimationActive={false} />)}
           </BarChart> : <LineChart data={view === "party" ? data.partyParliaments : data.parliaments} accessibilityLayer margin={{ top: 16, right: 24, left: 30, bottom: 45 }}>
+            {parliamentGovernmentAreas(parliamentLabels, parliamentTokens)}
             <CartesianGrid vertical={false} stroke="var(--border)" />
             {parliamentAxis}
             <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
@@ -189,8 +193,8 @@ function Insights() {
           </LineChart>}
         </ChartContainer>}
       </div>
-      {!byParliament && <GovernmentLegend />}
-      {!byParliament && <p className="mt-3 text-xs text-muted-foreground">Background bands mark UK governments, using appointment dates; the coalition is shown separately. Unspecified whip outcomes are excluded. Government dates: <a className="underline underline-offset-4" href="https://www.gov.uk/government/history/past-prime-ministers" target="_blank" rel="noreferrer">GOV.UK, past prime ministers</a>.</p>}
+      <GovernmentLegend />
+      <p className="mt-3 text-xs text-muted-foreground">Background bands mark UK governments, using appointment dates; the coalition is shown separately.{byParliament && " Each parliament is shaded by the government in office when it began."} Unspecified whip outcomes are excluded. Government dates: <a className="underline underline-offset-4" href="https://www.gov.uk/government/history/past-prime-ministers" target="_blank" rel="noreferrer">GOV.UK, past prime ministers</a>.</p>
       <Button className="mt-4" variant="outline" onClick={() => setShowTable(!showTable)} aria-expanded={showTable} aria-controls="timeline-data"><Table2 />{showTable ? "Hide figures" : "View figures"}</Button>
       {showTable && <div id="timeline-data" className="mt-4">{view === "party" ? <PartyYearTable rows={byParliament ? data.partyParliaments : data.partyYears} heading={byParliament ? "Parliament" : "Year"} /> : <CountsTable groups={byParliament ? data.parliaments : data.years} heading={byParliament ? "Parliament" : "Year"} />}</div>}
     </section>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildInsights } from "@/lib/insights";
+import { buildInsights, parliamentGovernment } from "@/lib/insights";
 import { rows, type RecordRow } from "@/lib/records";
 import { chartDate, governmentPeriods } from "@/lib/government-periods";
 
@@ -67,6 +67,18 @@ describe("party counts by parliament", () => {
     for (const point of data.partyParliaments) {
       const sum = data.partySeries.reduce((s, p) => s + Number((point as Record<string, unknown>)[p.key] ?? 0), 0);
       expect(sum).toBe(data.parliaments.find((g) => g.label === point.label)?.total);
+    }
+  });
+  it("shades each parliament by the government in office when it began", () => {
+    expect(parliamentGovernment("1979-1983")?.token).toBe("government-conservative");
+    expect(parliamentGovernment("1997-2001")?.token).toBe("government-labour");
+    expect(parliamentGovernment("2010-2015")?.token).toBe("government-coalition");
+    expect(parliamentGovernment("2017-2019")?.token).toBe("government-conservative");
+    // The 2024 parliament began 4 July, the day before Labour took office on 5 July.
+    expect(parliamentGovernment("2024")?.token).toBe("government-conservative");
+    const data = buildInsights();
+    for (const point of data.partyParliaments) {
+      expect(point.government).toBe(parliamentGovernment(point.label)?.token);
     }
   });
 });
