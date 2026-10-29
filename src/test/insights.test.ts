@@ -62,6 +62,18 @@ describe("WhipWatch insights", () => {
   });
 });
 describe("party counts by parliament", () => {
+  it("labels the completed 2019 parliament with its full period without changing its total", () => {
+    const data = buildInsights();
+    expect(data.parliaments.find((group) => group.label === "2019–2024")?.total).toBe(44);
+    expect(data.parliaments.some((group) => group.label === "2019")).toBe(false);
+    expect(data.partyParliaments.find((point) => point.label === "2019–2024")?.government).toBe("government-conservative");
+  });
+  it("labels the current parliament as ongoing without changing its total or Labour shading", () => {
+    const data = buildInsights();
+    expect(data.parliaments.find((group) => group.label === "2024–present")?.total).toBe(30);
+    expect(data.parliaments.some((group) => group.label === "2024")).toBe(false);
+    expect(data.partyParliaments.find((point) => point.label === "2024–present")?.government).toBe("government-labour");
+  });
   it("combines the 2017 and 2017-2019 entries into one parliament with 60 events", () => {
     const data = buildInsights();
     const groups = data.parliaments.filter((group) => group.label.startsWith("2017"));

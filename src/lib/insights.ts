@@ -5,7 +5,7 @@ import { governmentFor } from "@/lib/government-periods";
 // Exception: the 2024 parliament began 4 July 2024, one day before Labour took
 // office, so it is shaded Labour — nearly all of it sits under that government.
 export function parliamentGovernment(label: string) {
-  if (label === "2024") return governmentFor(2026);
+  if (label === "2024" || label === "2024–present") return governmentFor(2026);
   const year = Number(label.slice(0, 4));
   return /^\d{4}$/.test(label.slice(0, 4)) ? governmentFor(year + 0.5) : undefined;
 }
@@ -72,9 +72,11 @@ export function buildInsights(records: RecordRow[] = rows) {
       addRecord(group, row);
       years.set(year, group);
     }
-    // Normalize the two source labels without altering the underlying records.
+    // Normalize source labels without altering the underlying records.
     const parliament = row.parliament === "2017" || row.parliament === "2017-2019"
       ? "2017–2019"
+      : row.parliament === "2019" ? "2019–2024"
+      : row.parliament === "2024" ? "2024–present"
       : row.parliament || "Unspecified";
     const group = parliaments.get(parliament) ?? { label: parliament, ...emptyCounts() };
     addRecord(group, row);
