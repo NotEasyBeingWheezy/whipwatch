@@ -1,5 +1,6 @@
 # WhipWatch insights
-- [ ] Check Parliament career dates for the ten latest records, retain news citations, and verify the displayed sources.
+- [x] Check Parliament career dates for the ten latest records and retain news citations.
+- [ ] Verify the displayed Parliament links and date notes.
 - [x] Reclassify Scott Benton, explain source terminology below outcome definitions, add a Contact page and verify totals/navigation.
 - [ ] Enable contribution contact details; waiting for the owner’s email address or preferred contact link.
 - [x] Add yearly and parliament charts of recorded whip losses.
