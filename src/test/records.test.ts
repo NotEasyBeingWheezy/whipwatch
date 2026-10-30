@@ -3,6 +3,10 @@ import currentRecords from "@/data/changes.json";
 import { rows, formatRecordDate } from "@/lib/records";
 
 describe("Historical records", () => {
+  it("classifies Scott Benton's 5 April 2023 whip loss as Withdrawn while retaining the source label in its notes", () => {
+    const benton = currentRecords.find((row) => row.member === "Scott Benton" && row.date === "2023-04-05");
+    expect(benton?.whip).toBe("Withdrawn");
+  });
   it("includes the ten additional source entries, going back to John Wason in 1902", () => {
     expect(rows).toHaveLength(currentRecords.length + 10);
     expect(rows.at(-1)).toMatchObject({ member: "John Wason", date: "1902-11-01" });

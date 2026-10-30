@@ -94,6 +94,7 @@ function About() {
               </div>
             ))}
           </div>
+          <OutcomeNote />
         </div>
 
         <div className="space-y-4">
