@@ -5,3 +5,4 @@
 - [x] Add party-coloured annual lines with government-period shading.
 - [x] Verify timeline counts, government boundaries and chart interactions.
 - [x] Fit the combined chart and controls to phone screens and verify all chart modes.
+- [ ] Open Home from Insights bars with matching year/parliament and visible series filters; verify counts and navigation.
