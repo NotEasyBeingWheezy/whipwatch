@@ -10,7 +10,7 @@
 <!-- LOVABLE:END -->
 
 - Combine the main and historical spreadsheet extracts in `src/lib/records.ts`, preserving source precision and provenance; keep unknown whip outcomes blank rather than inferring them from allegiance changes.
-- Store checked Parliament career links alongside news citations in each record's `sources`; document affiliation-date agreement or discrepancies in notes without silently overwriting source event dates, because party history alone does not establish a whip outcome.
+- Store checked Parliament career links alongside event citations in each record's `sources`; preserve source event dates and existing notes without adding affiliation commentary, because party history alone does not establish a whip outcome.
 - Document any deliberate source-outcome reclassification in the record notes and reuse `OutcomeNote` across explanation pages so the displayed totals remain transparent.
 - Include each new content route in `scripts/prerender-pages.mjs` so GitHub Pages serves it directly.
 - Derive Insights aggregates from the shared records in `src/lib/insights.ts`; count only explicit withdrawn, resigned or suspended outcomes as whip losses, and group parties by the source's before-party field to avoid inferring events or allegiances.

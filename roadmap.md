@@ -1,4 +1,5 @@
 # WhipWatch insights
+- [x] Add citations to all 236 remaining records and verify every original note/date/outcome is unchanged; four archival entries retain Parliament career and Library sources without independently verified news (Robert Mellish, John Ryman, Dave Nellist, John Browne). Historical records use checked archival sources where modern careers are unavailable; Taylor identity mismatch is explicit in its source label.
 - [x] Check Parliament career dates for the ten latest records and retain news citations.
 - [x] Verify the displayed Parliament links and date notes.
 - [x] Reclassify Scott Benton, explain source terminology below outcome definitions, add a Contact page and verify totals/navigation.

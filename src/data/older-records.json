@@ -9,7 +9,17 @@
     "after": "Ind Liberal",
     "notes": "Won by-election in November 1902",
     "older": true,
-    "datePrecision": "month"
+    "datePrecision": "month",
+    "sources": [
+      {
+        "label": "Historic Hansard constituency service (not a modern career page)",
+        "url": "https://api.parliament.uk/historic-hansard/constituencies/orkney-and-shetland"
+      },
+      {
+        "label": "Who Was Who: resignation and re-election (bibliographic summary)",
+        "url": "https://doi.org/10.1093/ww/9780199540884.013.u204369"
+      }
+    ]
   },
   {
     "parliament": "",
@@ -21,7 +31,21 @@
     "after": "Ind",
     "notes": "Won by-election in April 1904 unopposed",
     "older": true,
-    "datePrecision": "month"
+    "datePrecision": "month",
+    "sources": [
+      {
+        "label": "Historic Hansard biography and service",
+        "url": "https://api.parliament.uk/historic-hansard/people/major-general-john-seely/index.html"
+      },
+      {
+        "label": "Hansard: new member sworn, 13 April 1904",
+        "url": "https://api.parliament.uk/historic-hansard/commons/1904/apr/13/new-member-sworn"
+      },
+      {
+        "label": "Journal of Liberal History — J. E. B. Seely biographical notice",
+        "url": "https://liberalhistory.org.uk/timeline-event/on-this-day-7-11-1947/"
+      }
+    ]
   },
   {
     "parliament": "",
@@ -33,7 +57,13 @@
     "after": "Ind",
     "notes": "Resigned Dec 1904 but did not contest by-election",
     "older": true,
-    "datePrecision": "month"
+    "datePrecision": "month",
+    "sources": [
+      {
+        "label": "Cumbrian Lives — Richard Rigg, by Andy Connell",
+        "url": "https://www.cumbrianlives.org.uk/lives/richard-rigg.html"
+      }
+    ]
   },
   {
     "parliament": "",
@@ -45,7 +75,13 @@
     "after": "Ind",
     "notes": "Lost by-election in May 1909",
     "older": true,
-    "datePrecision": "month"
+    "datePrecision": "month",
+    "sources": [
+      {
+        "label": "History of Parliament — biography",
+        "url": "https://membersafter1832.historyofparliamentonline.org/members/4599"
+      }
+    ]
   },
   {
     "parliament": "",
@@ -57,7 +93,17 @@
     "after": "Lab",
     "notes": "Won by-election in November 1926",
     "older": true,
-    "datePrecision": "month"
+    "datePrecision": "month",
+    "sources": [
+      {
+        "label": "History of Parliament — biography",
+        "url": "https://membersafter1832.historyofparliamentonline.org/members/4571"
+      },
+      {
+        "label": "Spectator archive: re-elected after leaving Liberals, 4 December 1926",
+        "url": "https://archive.spectator.co.uk/article/4th-december-1926/3/at-the-central-hull-by-election-of-which-the-resul"
+      }
+    ]
   },
   {
     "parliament": "",
@@ -69,7 +115,17 @@
     "after": "Ind",
     "notes": "Lost by-election in March 1927",
     "older": true,
-    "datePrecision": "month"
+    "datePrecision": "month",
+    "sources": [
+      {
+        "label": "Historic Hansard biography and service",
+        "url": "https://api.parliament.uk/historic-hansard/people/dr-leslie-haden-guest"
+      },
+      {
+        "label": "Spectator archive: resignation and independent candidacy, 19 March 1927",
+        "url": "https://archive.spectator.co.uk/article/19th-march-1927/3/the-by-election-campaign-in-north-southwark-where-"
+      }
+    ]
   },
   {
     "parliament": "",
@@ -81,7 +137,17 @@
     "after": "Lab",
     "notes": "Won by-election in July 1929",
     "older": true,
-    "datePrecision": "month"
+    "datePrecision": "month",
+    "sources": [
+      {
+        "label": "Historic Hansard biography and service",
+        "url": "https://api.parliament.uk/historic-hansard/people/sir-william-jowitt/index.html"
+      },
+      {
+        "label": "Durham University Henson Journals: joined Labour on becoming attorney-general",
+        "url": "https://henson.durham.ac.uk/people/person5512"
+      }
+    ]
   },
   {
     "parliament": "",
@@ -93,7 +159,21 @@
     "after": "Ind",
     "notes": "Lost by-election in December 1938",
     "older": true,
-    "datePrecision": "month"
+    "datePrecision": "month",
+    "sources": [
+      {
+        "label": "Historic Hansard biography and service",
+        "url": "https://api.parliament.uk/historic-hansard/people/duchess-of-atholl/index.html"
+      },
+      {
+        "label": "Hansard: new writ following resignation, 30 November 1938",
+        "url": "https://api.parliament.uk/historic-hansard/commons/1938/nov/30/new-writ"
+      },
+      {
+        "label": "The New York Times — Duchess quits House, 25 November 1938",
+        "url": "https://www.nytimes.com/1938/11/25/archives/duchess-of-atholl-quits-house-place-wants-immediate-election-to.html"
+      }
+    ]
   },
   {
     "parliament": "1951-1955",
@@ -105,7 +185,17 @@
     "after": "Ind",
     "notes": "Resigned seat to fight by-election; expelled from party. Parliament dissolved before by-election; unsuccessfully contested the seat at the GE in May 1955",
     "older": true,
-    "datePrecision": "month"
+    "datePrecision": "month",
+    "sources": [
+      {
+        "label": "Historic Hansard biography and service",
+        "url": "https://api.parliament.uk/historic-hansard/people/mr-richard-acland/index.html"
+      },
+      {
+        "label": "The Spectator archive — Why Resign?, by Sir Richard Acland, 18 March 1955",
+        "url": "https://archive.spectator.co.uk/article/18th-march-1955/8/why-resign-"
+      }
+    ]
   },
   {
     "parliament": "1970-1974",
@@ -117,6 +207,16 @@
     "after": "Dem Lab",
     "notes": "Won by-election in Mar 1973; re-elected in Feb 1974",
     "older": true,
-    "datePrecision": "month"
+    "datePrecision": "month",
+    "sources": [
+      {
+        "label": "UK Parliament — career",
+        "url": "https://members.parliament.uk/member/1696/career"
+      },
+      {
+        "label": "History of Parliament — biography",
+        "url": "https://www.historyofparliamentonline.org/volume/oral-history/member/taverne-dick-1928"
+      }
+    ]
   }
 ]
