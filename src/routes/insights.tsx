@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 import { buildInsights, parliamentGovernment, type InsightGroup } from "@/lib/insights";
 import { GovernmentLegend, governmentAreas, parliamentGovernmentAreas, partyChartConfig } from "@/components/party-timeline";
+import { chartRecordFilters } from "@/lib/record-filters";
 
 export const Route = createFileRoute("/insights")({
   head: () => ({ meta: [
@@ -128,6 +129,7 @@ function CountsTable({ groups, heading, unknown = false }: { groups: InsightGrou
 }
 
 function Insights() {
+  const navigate = Route.useNavigate();
   const isMobile = useIsMobile();
   const [view, setView] = useState<"outcome" | "party">("outcome");
   const [chartType, setChartType] = useState<"bars" | "lines">("bars");
@@ -143,6 +145,13 @@ function Insights() {
   const barData = (byParliament ? (view === "party" ? data.partyParliaments : data.parliaments) : chartData)
     .map((point) => ({ ...point, visibleTotal: keys.reduce((sum, key) => sum + Number((point as Record<string, unknown>)[key] ?? 0), 0) }));
   const chartConfig = view === "party" ? partyChartConfig : config;
+  const openRecords = (label: unknown) => {
+    if (typeof label !== "string" || !keys.length) return;
+    const selection = view === "party"
+      ? { parties: data.partySeries.filter((party) => keys.includes(party.key)).map((party) => party.source) }
+      : { outcomes: keys.map((key) => String(config[key as keyof typeof config].label)) };
+    void navigate({ to: "/", search: chartRecordFilters(label, group, selection) });
+  };
   const color = (key: string) => view === "party" ? partyChartConfig[key]?.color : config[key as keyof typeof config].color;
   const yearAxis = <XAxis type="number" dataKey="year" domain={[startYear, endYear]} ticks={isMobile ? yearTicks.filter((_, index) => index % 2 === 0) : yearTicks}
     tickFormatter={(value) => String(Math.floor(Number(value)))} tickLine={false} axisLine={false} tickMargin={10} />;
@@ -195,7 +204,7 @@ function Insights() {
             {parliamentAxis}
             <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
             <ChartTooltip content={<BarTooltip config={chartConfig} />} />
-            {keys.map((key) => <Bar key={key} dataKey={key} stackId="events" fill={color(key)} isAnimationActive={false} />)}
+            {keys.map((key) => <Bar key={key} dataKey={key} stackId="events" fill={color(key)} className="cursor-pointer" onClick={(entry) => openRecords(entry.payload?.label)} isAnimationActive={false} />)}
           </BarChart> : <LineChart data={view === "party" ? data.partyParliaments : data.parliaments} accessibilityLayer margin={parliamentMargin}>
             {parliamentGovernmentAreas(parliamentLabels, parliamentTokens)}
             <CartesianGrid vertical={false} stroke="var(--border)" />
@@ -211,7 +220,7 @@ function Insights() {
             {yearAxis}
             <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
             <ChartTooltip content={<BarTooltip config={chartConfig} />} />
-            {keys.map((key) => <Bar key={key} dataKey={key} stackId="events" {...(isMobile ? {} : { barSize: 13 })} fill={color(key)} isAnimationActive={false} />)}
+            {keys.map((key) => <Bar key={key} dataKey={key} stackId="events" {...(isMobile ? {} : { barSize: 13 })} fill={color(key)} className="cursor-pointer" onClick={(entry) => openRecords(entry.payload?.label)} isAnimationActive={false} />)}
           </BarChart> : <LineChart data={chartData} accessibilityLayer margin={{ top: 16, right: 12, left: 0, bottom: 15 }}>
             {governmentAreas(startYear, endYear)}
             <CartesianGrid vertical={false} stroke="var(--border)" />

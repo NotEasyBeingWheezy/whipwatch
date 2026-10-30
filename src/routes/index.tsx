@@ -2,7 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteNav } from "@/components/site-nav";
 import { useMemo } from "react";
 import { rows, formatRecordDate } from "@/lib/records";
-import { partyColor, partyDisplayName } from "@/lib/insights";
+import { partyColor, partyDisplayName, parliamentDisplayName } from "@/lib/insights";
+import { filterRecords, type RecordFilters } from "@/lib/record-filters";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -15,11 +17,12 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  validateSearch: (s: Record<string, unknown>): { q?: string | undefined; whip?: string | undefined; party?: string | undefined; year?: number | undefined; sort?: string | undefined } => ({
+  validateSearch: (s: Record<string, unknown>): RecordFilters => ({
     q: typeof s["q"] === "string" && s["q"] ? s["q"] : undefined,
     whip: typeof s["whip"] === "string" && s["whip"] !== "All" ? s["whip"] : undefined,
     party: typeof s["party"] === "string" && s["party"] !== "All" ? s["party"] : undefined,
     year: s["year"] != null && String(s["year"]) !== "All" ? Number(s["year"]) || undefined : undefined,
+    parliament: typeof s["parliament"] === "string" && s["parliament"] ? s["parliament"] : undefined,
     sort: s["sort"] === "oldest" ? "oldest" : undefined,
   }),
   component: Index,
@@ -34,6 +37,7 @@ function Index() {
   const whip = search.whip ?? "All";
   const party = search.party ?? "All";
   const year = search.year ? String(search.year) : "All";
+  const parliament = search.parliament ?? "All";
   const dateAsc = search.sort === "oldest";
   const setQ = (v: string) => set({ q: v || undefined });
   const setWhip = (v: string) => set({ whip: v === "All" ? undefined : v });
@@ -45,17 +49,8 @@ function Index() {
   };
   const parties = useMemo(() => ["All", ...Array.from(new Set(rows.map((r) => r.before).filter(Boolean))).sort()], []);
   const years = useMemo(() => ["All", ...Array.from(new Set(rows.map((r) => r.date.slice(0, 4)))).sort().reverse()], []);
-  const list = useMemo(() => {
-    const filtered = rows.filter(
-      (r) =>
-        (whip === "All" || r.whip === whip) &&
-        (party === "All" || r.before === party) &&
-        (year === "All" || r.date.slice(0, 4) === year) &&
-        (q === "" || `${r.member} ${r.constituency} ${r.notes}`.toLowerCase().includes(q.toLowerCase())),
-    );
-    const dir = dateAsc ? 1 : -1;
-    return [...filtered].sort((a, b) => a.date.localeCompare(b.date) * dir);
-  }, [q, whip, party, year, dateAsc]);
+  const parliaments = useMemo(() => [...new Set(rows.map((r) => parliamentDisplayName(r.parliament)))].sort().reverse(), []);
+  const list = useMemo(() => filterRecords(rows, search), [search]);
   const withdrawn = rows.filter((r) => r.whip === "Withdrawn").length;
   const resigned = rows.filter((r) => r.whip === "Resigned").length;
   const suspended = rows.filter((r) => r.whip === "Suspended").length;
@@ -87,23 +82,29 @@ function Index() {
         <div className="flex flex-wrap gap-3 mb-6">
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search MP, seat or notes…"
             className="flex-1 min-w-60 border border-input bg-card px-4 py-2 outline-none focus:border-primary" />
-          <select value={whip} onChange={(e) => setWhip(e.target.value)} className="border border-input bg-card px-3 py-2">
+          <select value={whip} onChange={(e) => setWhip(e.target.value)} aria-label="Filter by whip outcome" className="max-w-full border border-input bg-card px-3 py-2">
             {["All", "Withdrawn", "Resigned", "Suspended"].map((w) => <option key={w}>{w}</option>)}
+            {whip.includes(",") && <option value={whip}>{whip === "Withdrawn,Resigned,Suspended" ? "All whip losses" : whip.split(",").join(" / ")}</option>}
           </select>
           <select value={party} onChange={(e) => setParty(e.target.value)} className="border border-input bg-card px-3 py-2" aria-label="Filter by party">
             {parties.map((p) => <option key={p} value={p}>{p === "All" ? "All parties" : partyDisplayName(p)}</option>)}
+            {party.includes(",") && <option value={party}>Selected chart parties</option>}
           </select>
           <select value={year} onChange={(e) => setYear(e.target.value)} className="border border-input bg-card px-3 py-2" aria-label="Filter by year">
             {years.map((y) => <option key={y} value={y}>{y === "All" ? "All years" : y}</option>)}
           </select>
-          <button
+          {search.parliament && <select value={parliament} onChange={(e) => set({ parliament: e.target.value === "All" ? undefined : e.target.value })} className="max-w-full border border-input bg-card px-3 py-2" aria-label="Filter by parliament">
+            <option value="All">All parliaments</option>
+            {parliaments.map((p) => <option key={p} value={p}>{p}</option>)}
+          </select>}
+          <Button variant="outline"
             type="button"
             onClick={() => navigate({ search: {}, replace: true })}
-            disabled={!q && whip === "All" && party === "All" && year === "All" && !dateAsc}
+            disabled={!q && whip === "All" && party === "All" && year === "All" && parliament === "All" && !dateAsc}
             className="border border-input bg-card px-3 py-2 font-mono text-xs uppercase hover:border-primary hover:text-primary disabled:opacity-40 disabled:pointer-events-none"
           >
             Clear filters
-          </button>
+          </Button>
         </div>
         <p className="font-mono text-xs text-muted-foreground mb-3">{list.length} records · {list.filter((r) => r.older).length} older records</p>
         <div className="border border-border bg-card">
