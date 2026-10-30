@@ -1,4 +1,5 @@
 # WhipWatch insights
+- [ ] Add checked Parliament and event sources to remaining records, preserving the owner's notes; identify archival gaps honestly.
 - [x] Check Parliament career dates for the ten latest records and retain news citations.
 - [x] Verify the displayed Parliament links and date notes.
 - [x] Reclassify Scott Benton, explain source terminology below outcome definitions, add a Contact page and verify totals/navigation.
