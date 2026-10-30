@@ -101,7 +101,7 @@ function About() {
           <h2 className="font-display text-2xl">Where the data comes from</h2>
           <p className="text-muted-foreground">
             The records are drawn from the House of Commons Library briefing{" "}
-            <span className="font-mono text-xs text-foreground">SN02537: Recall of MPs, suspension and resignation of the party whip</span>,
+            <span className="font-mono text-xs text-foreground">SN02537: MPs’ changes of party allegiance in the House of Commons since 1979</span>,
             updated 21 October 2026. That briefing covers the whip suspensions and resignations of the current
             parliament's parties; older parties and parliaments may be incomplete.
           </p>
