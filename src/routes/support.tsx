@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteNav } from "@/components/site-nav";
 import { rows } from "@/lib/records";
 
@@ -86,7 +86,12 @@ function Support() {
           <p>
             Your support doesn't change how the records are kept. Every entry is verified against
             parliamentary and news sources, and corrections are welcome on the{" "}
-            <a href="/contact" className="text-primary underline underline-offset-4 hover:text-primary/80">contact page</a>.
+            <Link
+              to="/contact"
+              className="text-primary underline underline-offset-4 hover:text-primary/80"
+            >
+              contact page
+            </Link>.
           </p>
         </div>
       </section>
