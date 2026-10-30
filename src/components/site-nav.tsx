@@ -33,6 +33,13 @@ export function SiteNav() {
       >
         Contact
       </Link>
+      <Link
+        to="/support"
+        activeProps={{ className: "border-b-2 border-primary pb-1 text-primary" }}
+        inactiveProps={{ className: "pb-1 text-muted-foreground transition-colors hover:text-foreground" }}
+      >
+        Support
+      </Link>
       <ThemeToggle />
     </nav>
   );
