@@ -11,7 +11,7 @@ export function OutcomeNote() {
       being the only entry labelled “Suspended”. For consistency, we have classified his entry as “Withdrawn”
       too. If Parliament revises the source, we will update WhipWatch to match. If you spot an error,
       have better information, or would like to improve the accuracy of the data, please get in touch 
-      via our Contact page.{" "}
+      via our{" "}
       <Link to="/contact" className="text-primary underline underline-offset-4">Contact page</Link>.
     </p>
   );
