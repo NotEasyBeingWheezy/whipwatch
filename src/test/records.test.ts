@@ -31,3 +31,16 @@ describe("Historical records", () => {
     expect(rows.map((row) => row.date)).toEqual(rows.map((row) => row.date).sort().reverse());
   });
 });
+
+describe("Source links", () => {
+  it("gives the ten most recent records at least one news source link", () => {
+    const recent = rows.slice(0, 10);
+    expect(recent).toHaveLength(10);
+    expect(recent.every((row) => (row.sources?.length ?? 0) > 0)).toBe(true);
+    expect(recent.flatMap((row) => row.sources ?? []).every((s) => s.label.length > 0 && s.url.startsWith("https://"))).toBe(true);
+  });
+
+  it("leaves every other record without invented sources", () => {
+    expect(rows.slice(10).every((row) => !row.sources)).toBe(true);
+  });
+});

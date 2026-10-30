@@ -138,7 +138,19 @@ function Index() {
                     </span>
                     <span className="text-muted-foreground"> → {r.after === "-" ? "—" : partyDisplayName(r.after)}</span>
                   </td>
-                  <td className="order-6 col-span-2 block text-muted-foreground sm:order-none sm:table-cell sm:max-w-sm sm:px-4 sm:py-3">{r.notes}</td>
+                  <td className="order-6 col-span-2 block text-muted-foreground sm:order-none sm:table-cell sm:max-w-sm sm:px-4 sm:py-3">
+                    {r.notes}
+                    {r.sources?.length ? (
+                      <span className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+                        <span className="font-mono text-xs uppercase text-muted-foreground">Source:</span>
+                        {r.sources.map((s) => (
+                          <a key={s.url} href={s.url} target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-4">
+                            {s.label}
+                          </a>
+                        ))}
+                      </span>
+                    ) : null}
+                  </td>
                 </tr>
               ))}
             </tbody>

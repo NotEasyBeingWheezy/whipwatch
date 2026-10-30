@@ -10,6 +10,7 @@ export type RecordRow = {
   before: string;
   after: string;
   notes: string;
+  sources?: { label: string; url: string }[];
   older?: boolean;
   datePrecision?: string;
 };

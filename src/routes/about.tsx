@@ -70,7 +70,7 @@ function About() {
               ["Constituency", "The seat the MP was representing."],
               ["Whip", "What happened: Withdrawn, Suspended or Resigned. A dash means the source does not specify the whip outcome; a change of party alone does not establish it. See below for the difference."],
               ["Party", "The party the MP held the whip for (before) and the party afterwards, if they joined one. \"Independent\" means they sat without a party."],
-              ["Notes", "A short summary of why it happened, and what followed — for example if the whip was later restored."],
+              ["Notes", "A short summary of why it happened, and what followed — for example if the whip was later restored. Recent entries include links to news reports covering the event."],
             ].map(([term, def]) => (
               <div key={term} className="flex gap-4 border-b border-border px-4 py-3 last:border-b-0">
                 <span className="w-28 shrink-0 font-mono text-xs uppercase text-primary">{term}</span>
