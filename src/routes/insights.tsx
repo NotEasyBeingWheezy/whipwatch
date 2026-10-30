@@ -168,8 +168,8 @@ function Insights() {
         <p className="font-mono text-xs uppercase tracking-[0.3em] text-primary">Insights · Whip losses in numbers</p>
         <h1 className="mt-3 font-display text-6xl leading-none md:text-8xl">WhipWatch</h1>
         <p className="mt-4 max-w-xl text-muted-foreground">Recorded withdrawals, resignations and suspensions, 1979–2026. Each time an MP lost the whip is counted, so one MP can appear more than once.</p>
-        <dl className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-2xl">
-          {[["Total", data.totals.total], ["Withdrawn", data.totals.withdrawn], ["Resigned", data.totals.resigned], ["Suspended", data.totals.suspended]].map(([label, count]) => <div key={label} className="border-l-2 border-border pl-4"><dd className="font-display text-4xl text-primary">{count}</dd><dt className="mt-1 font-mono text-xs uppercase text-muted-foreground">{label}</dt></div>)}
+        <dl className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-6 max-w-2xl">
+          {[["Total", data.totals.total], ["Withdrawn", data.totals.withdrawn], ["Resigned", data.totals.resigned]].map(([label, count]) => <div key={label} className="border-l-2 border-border pl-4"><dd className="font-display text-4xl text-primary">{count}</dd><dt className="mt-1 font-mono text-xs uppercase text-muted-foreground">{label}</dt></div>)}
         </dl>
         <div className="mt-6 max-w-3xl"><OutcomeNote /></div>
       </div>
