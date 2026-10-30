@@ -2,12 +2,12 @@ import { outcomes, parliamentDisplayName } from "@/lib/insights";
 import { type RecordRow } from "@/lib/records";
 
 export type RecordFilters = {
-  q?: string;
-  whip?: string;
-  party?: string;
-  year?: number;
-  parliament?: string;
-  sort?: string;
+  q?: string | undefined;
+  whip?: string | undefined;
+  party?: string | undefined;
+  year?: number | undefined;
+  parliament?: string | undefined;
+  sort?: string | undefined;
 };
 
 export function chartRecordFilters(label: string, group: "year" | "parliament", selection: { outcomes?: string[]; parties?: string[] } = {}): RecordFilters {
