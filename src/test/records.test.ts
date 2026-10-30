@@ -48,7 +48,15 @@ describe("Source links", () => {
     expect(recent.flatMap((row) => row.sources ?? []).every((s) => s.label.length > 0 && s.url.startsWith("https://"))).toBe(true);
   });
 
-  it("leaves every other record without invented sources", () => {
-    expect(rows.slice(10).every((row) => !row.sources)).toBe(true);
+  it("provides checked citations for all 246 records, including the ten historical entries", () => {
+    expect(rows).toHaveLength(246);
+    for (const row of rows) {
+      const sources = row.sources ?? [];
+      expect(sources.length, `${row.member} ${row.date}`).toBeGreaterThan(0);
+      expect(new Set(sources.map((source) => source.url)).size).toBe(sources.length);
+      for (const source of sources) {
+        expect(new URL(source.url).protocol).toBe("https:");
+      }
+    }
   });
 });
