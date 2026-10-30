@@ -1,4 +1,5 @@
 # WhipWatch insights
+- [ ] Reclassify Scott Benton, explain source terminology below outcome definitions, add a Contact page and verify totals/navigation.
 - [x] Add yearly and parliament charts of recorded whip losses.
 - [x] Add party totals with unknown outcomes kept separate.
 - [x] Add Insights navigation and verify charts, totals and page navigation.
