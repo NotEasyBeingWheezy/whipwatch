@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteNav } from "@/components/site-nav";
+import { OutcomeNote } from "@/components/outcome-note";
 import { rows } from "@/lib/records";
 
 const count = (w: string) => rows.filter((r) => r.whip === w).length;
