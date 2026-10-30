@@ -14,6 +14,13 @@ export const outcomes = ["Withdrawn", "Resigned", "Suspended"] as const;
 export type Counts = { withdrawn: number; resigned: number; suspended: number; unspecified: number; total: number };
 export type InsightGroup = Counts & { label: string };
 
+export function parliamentDisplayName(source: string): string {
+  return source === "2017" || source === "2017-2019" ? "2017–2019"
+    : source === "2019" ? "2019–2024"
+    : source === "2024" ? "2024–present"
+    : source || "Unspecified";
+}
+
 const partyNames: Record<string, string> = {
   Lab: "Labour", Con: "Conservative", LD: "Liberal Democrats", "Lib Dem": "Liberal Democrats", SNP: "SNP",
   SDLP: "SDLP", DUP: "DUP", UUP: "UUP", PC: "Plaid Cymru",
@@ -73,11 +80,7 @@ export function buildInsights(records: RecordRow[] = rows) {
       years.set(year, group);
     }
     // Normalize source labels without altering the underlying records.
-    const parliament = row.parliament === "2017" || row.parliament === "2017-2019"
-      ? "2017–2019"
-      : row.parliament === "2019" ? "2019–2024"
-      : row.parliament === "2024" ? "2024–present"
-      : row.parliament || "Unspecified";
+    const parliament = parliamentDisplayName(row.parliament);
     const group = parliaments.get(parliament) ?? { label: parliament, ...emptyCounts() };
     addRecord(group, row);
     parliaments.set(parliament, group);
