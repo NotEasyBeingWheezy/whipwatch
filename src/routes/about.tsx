@@ -70,7 +70,7 @@ function About() {
               ["Constituency", "The seat the MP was representing."],
               ["Whip", "What happened: Withdrawn, Suspended or Resigned. A dash means the source does not specify the whip outcome; a change of party alone does not establish it. See below for the difference."],
               ["Party", "The party the MP held the whip for (before) and the party afterwards, if they joined one. \"Independent\" means they sat without a party."],
-              ["Notes", "A short summary of why it happened, and what followed — for example if the whip was later restored. Recent entries include links to news reports covering the event."],
+              ["Notes", "A short summary of why it happened, and what followed — for example if the whip was later restored. The ten most recent entries cite Parliament career pages for party-affiliation dates alongside news reports for the event and its context."],
             ].map(([term, def]) => (
               <div key={term} className="flex gap-4 border-b border-border px-4 py-3 last:border-b-0">
                 <span className="w-28 shrink-0 font-mono text-xs uppercase text-primary">{term}</span>
@@ -115,6 +115,12 @@ function About() {
           <p className="text-muted-foreground">
             The notes column summarises each entry rather than quoting it in full, so for the detail behind
             any event, the original briefing is the authoritative source.
+          </p>
+          <p className="text-muted-foreground">
+            Parliament career pages record parliamentary party affiliation, not necessarily the date a whip
+            decision was announced or its reason. For the ten most recent entries, these dates are
+            cross-checked alongside news reports. Any difference is noted without silently replacing the
+            spreadsheet date or inferring a whip outcome from a change of affiliation.
           </p>
         </div>
 

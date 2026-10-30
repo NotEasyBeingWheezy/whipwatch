@@ -33,6 +33,14 @@ describe("Historical records", () => {
 });
 
 describe("Source links", () => {
+  it("pairs a Parliament career source with news evidence for each of the ten most recent entries", () => {
+    for (const row of rows.slice(0, 10)) {
+      const sources = row.sources ?? [];
+      expect(sources.filter((source) => /^https:\/\/members\.parliament\.uk\/member\/\d+\/career$/.test(source.url))).toHaveLength(1);
+      expect(sources.some((source) => !source.url.startsWith("https://members.parliament.uk/"))).toBe(true);
+    }
+  });
+
   it("gives the ten most recent records at least one news source link", () => {
     const recent = rows.slice(0, 10);
     expect(recent).toHaveLength(10);
