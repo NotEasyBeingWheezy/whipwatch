@@ -84,7 +84,7 @@ function About() {
           <h2 className="font-display text-2xl">The three outcomes</h2>
           <div className="grid gap-4 md:grid-cols-3">
             {[
-              ["Withdrawn", "The party removed the whip — the MP was expelled or suspended from the parliamentary party, usually for misconduct or for rebelling against the party line."],
+              ["Withdrawn", "The party removed the whip — the MP was expelled from the parliamentary party, usually for misconduct or for rebelling against the party line."],
               ["Resigned", "The MP gave up the whip themselves, for example over a disagreement with the party or a personal scandal."],
               ["Suspended", "A temporary removal, typically pending an investigation. The whip is sometimes later restored."],
             ].map(([title, def]) => (
