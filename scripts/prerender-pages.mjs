@@ -15,7 +15,7 @@ import { fileURLToPath } from "node:url";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const outDir = join(root, "dist", "client");
 const base = (process.env.VITE_BASE_PATH ?? "/").replace(/\/$/, "");
-const routes = ["/", "/insights", "/about"];
+const routes = ["/", "/insights", "/about", "/contact"];
 
 const server = (await import(join(root, "dist", "server", "index.mjs"))).default;
 const ctx = { waitUntil: () => {} };

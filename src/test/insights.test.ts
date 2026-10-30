@@ -51,7 +51,7 @@ describe("WhipWatch insights", () => {
   });
   it("reconciles real party and timeline totals with explicit source outcomes", () => {
     const result = buildInsights();
-    expect(result.totals).toEqual({ withdrawn: 135, resigned: 98, suspended: 1, total: 234, unspecified: 12 });
+    expect(result.totals).toEqual({ withdrawn: 136, resigned: 98, suspended: 0, total: 234, unspecified: 12 });
     expect(result.years.find((year) => year.label === "2019")).toMatchObject({ total: 48, withdrawn: 26, resigned: 22 });
     const expected = rows.filter((r) => ["Withdrawn", "Resigned", "Suspended"].includes(r.whip)).length;
     expect(result.totals.total).toBe(expected);

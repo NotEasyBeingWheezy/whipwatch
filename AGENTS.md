@@ -10,6 +10,8 @@
 <!-- LOVABLE:END -->
 
 - Combine the main and historical spreadsheet extracts in `src/lib/records.ts`, preserving source precision and provenance; keep unknown whip outcomes blank rather than inferring them from allegiance changes.
+- Document any deliberate source-outcome reclassification in the record notes and reuse `OutcomeNote` across explanation pages so the displayed totals remain transparent.
+- Include each new content route in `scripts/prerender-pages.mjs` so GitHub Pages serves it directly.
 - Derive Insights aggregates from the shared records in `src/lib/insights.ts`; count only explicit withdrawn, resigned or suspended outcomes as whip losses, and group parties by the source's before-party field to avoid inferring events or allegiances.
 - Normalize equivalent parliament labels in the shared Insights aggregator, not the source extracts, so outcome and party charts agree while preserving provenance.
 - Share parliament label normalization and record filtering between Insights bar navigation and Home so linked records match the visible chart totals without altering source records.
