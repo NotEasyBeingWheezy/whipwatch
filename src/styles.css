@@ -112,6 +112,9 @@
   --party-plaid: oklch(0.49 0.14 145);
   --party-sdlp: oklch(0.63 0.11 155);
   --party-sf: oklch(0.39 0.08 165);
+  --party-sdp: oklch(0.45 0.12 20);
+  --party-ukip: oklch(0.5 0.16 300);
+  --party-alba: oklch(0.45 0.09 240);
   --government-conservative: oklch(0.52 0.17 255 / 10%);
   --government-labour: oklch(0.55 0.21 25 / 10%);
   --government-coalition: oklch(0.65 0.16 75 / 10%);
@@ -164,6 +167,9 @@
   --party-plaid: oklch(0.7 0.14 145);
   --party-sdlp: oklch(0.85 0.11 155);
   --party-sf: oklch(0.61 0.08 165);
+  --party-sdp: oklch(0.7 0.12 20);
+  --party-ukip: oklch(0.7 0.14 300);
+  --party-alba: oklch(0.7 0.09 240);
   --government-conservative: oklch(0.73 0.14 255 / 10%);
   --government-labour: oklch(0.72 0.19 25 / 10%);
   --government-coalition: oklch(0.8 0.15 75 / 10%);

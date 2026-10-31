@@ -27,6 +27,8 @@ const partyNames: Record<string, string> = {
   "Lab (Co-op)": "Labour (Co-op)", CUK: "Change UK", "Reform UK": "Reform UK",
   Liberal: "Liberal", "Liberal Unionist": "Liberal Unionist", SDP: "SDP", SF: "Sinn Féin",
   Ind: "Independent", "Deputy Speaker": "Deputy Speaker",
+  // Parties MPs joined after losing the whip.
+  UKIP: "UKIP", Alba: "Alba", Ref: "Reform UK", "Dem Lab": "Democratic Labour",
 };
 
 export function partyDisplayName(source: string): string {
@@ -38,10 +40,20 @@ export const partyColorTokens: Record<string, string> = {
   CUK: "party-cuk", "Lab (Co-op)": "party-coop", UUP: "party-uup", DUP: "party-dup",
   "Reform UK": "party-reform", "Deputy Speaker": "party-speaker", Ind: "party-independent",
   PC: "party-plaid", SDLP: "party-sdlp", SF: "party-sf",
+  SDP: "party-sdp", UKIP: "party-ukip", Alba: "party-alba", Ref: "party-reform",
 };
 
 export function partyColor(source: string): string {
   return `var(--${partyColorTokens[source] ?? "chart-5"})`;
+}
+
+// Colour for the party after the event. Every Independent variant ("Ind Con",
+// "Ind Lab", "Independent"…) shares the neutral Independent colour; actual
+// parties keep their own colour. Unknown labels fall back to chart-5.
+export function afterPartyColor(source: string): string | undefined {
+  if (!source || source === "-") return undefined;
+  if (source.startsWith("Ind")) return partyColor("Ind");
+  return partyColor(source);
 }
 
 function emptyCounts(): Counts {

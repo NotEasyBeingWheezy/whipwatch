@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteNav } from "@/components/site-nav";
 import { useMemo } from "react";
 import { rows, formatRecordDate } from "@/lib/records";
-import { partyColor, partyDisplayName, parliamentDisplayName } from "@/lib/insights";
+import { afterPartyColor, partyColor, partyDisplayName, parliamentDisplayName } from "@/lib/insights";
 import { filterRecords, type RecordFilters } from "@/lib/record-filters";
 import { Button } from "@/components/ui/button";
 
@@ -136,7 +136,13 @@ function Index() {
                       <span aria-hidden="true" className="inline-block h-2.5 w-2.5 shrink-0" style={{ backgroundColor: partyColor(r.before) }} />
                       {partyDisplayName(r.before)}
                     </span>
-                    <span className="text-muted-foreground"> → {r.after === "-" ? "—" : partyDisplayName(r.after)}</span>
+                    <span aria-hidden="true" className="ml-1 text-muted-foreground">→</span>
+                    {r.after === "-" ? <span className="text-muted-foreground">—</span> : (
+                      <span className="ml-1 inline-flex items-center gap-2">
+                        <span aria-hidden="true" className="inline-block h-2.5 w-2.5 shrink-0" style={{ backgroundColor: afterPartyColor(r.after) }} />
+                        {partyDisplayName(r.after)}
+                      </span>
+                    )}
                   </td>
                   <td className="order-6 col-span-2 block text-muted-foreground sm:order-none sm:table-cell sm:max-w-sm sm:px-4 sm:py-3">
                     {r.notes}
