@@ -1,11 +1,25 @@
 import { describe, expect, it } from "vitest";
-import { buildInsights, parliamentGovernment } from "@/lib/insights";
+import { afterPartyColor, buildInsights, parliamentGovernment, partyColor } from "@/lib/insights";
 import { rows, type RecordRow } from "@/lib/records";
 import { chartDate, governmentPeriods } from "@/lib/government-periods";
 
 function record(whip: string, before: string, after: string, date: string): RecordRow {
   return { whip, before, after, date, parliament: "2017-2019", member: "Example", constituency: "Example", notes: "" };
 }
+
+describe("after-party colours", () => {
+  it("shares one neutral colour across Independent variants and colours real parties", () => {
+    expect(afterPartyColor("-")).toBeUndefined();
+    expect(afterPartyColor("Ind")).toBe(partyColor("Ind"));
+    expect(afterPartyColor("Ind Con")).toBe(partyColor("Ind"));
+    expect(afterPartyColor("Independent")).toBe(partyColor("Ind"));
+    expect(afterPartyColor("SDP")).toBe("var(--party-sdp)");
+    expect(afterPartyColor("Reform UK")).toBe(partyColor("Reform UK"));
+    expect(afterPartyColor("Ref")).toBe(partyColor("Reform UK"));
+    expect(afterPartyColor("UKIP")).toBe("var(--party-ukip)");
+    expect(afterPartyColor("Alba")).toBe("var(--party-alba)");
+  });
+});
 
 describe("WhipWatch insights", () => {
   it("groups annual party lines by before-party and fills missing years with zero", () => {
