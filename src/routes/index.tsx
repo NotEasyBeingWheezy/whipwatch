@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteNav } from "@/components/site-nav";
 import { useMemo } from "react";
 import { rows, formatRecordDate } from "@/lib/records";
-import { partyColor, partyDisplayName, parliamentDisplayName } from "@/lib/insights";
+import { afterPartyColor, partyColor, partyDisplayName, parliamentDisplayName } from "@/lib/insights";
 import { filterRecords, type RecordFilters } from "@/lib/record-filters";
 import { Button } from "@/components/ui/button";
 
