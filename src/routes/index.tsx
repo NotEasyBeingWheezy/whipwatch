@@ -139,8 +139,8 @@ function Index() {
                     <span aria-hidden="true" className="ml-1 text-muted-foreground">→</span>
                     {r.after === "-" ? <span className="text-muted-foreground">—</span> : (
                       <span className="ml-1 inline-flex items-center gap-2">
-                        <span aria-hidden="true" className="inline-block h-2.5 w-2.5 shrink-0" style={{ backgroundColor: afterPartyColor(r.after) }} />
                         {partyDisplayName(r.after)}
+                        <span aria-hidden="true" className="inline-block h-2.5 w-2.5 shrink-0" style={{ backgroundColor: afterPartyColor(r.after) }} />
                       </span>
                     )}
                   </td>
