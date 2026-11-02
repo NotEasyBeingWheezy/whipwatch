@@ -60,37 +60,16 @@ function Support() {
           checking dates, chasing sources and keeping the records up to date.
         </p>
         {koFiUrl ? (
-          <>
-            <div className="flex flex-wrap items-center gap-4">
-              <a
-                href={koFiUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-semibold uppercase tracking-widest text-primary-foreground transition-colors hover:bg-primary/90"
-              >
-                Support on Ko-fi ☕
-              </a>
-              <a
-                href={koFiShopUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center rounded-md border border-input bg-background px-6 py-3 text-sm font-semibold uppercase tracking-widest text-foreground transition-colors hover:bg-accent"
-              >
-                Ko-fi shop
-              </a>
-              <span className="font-mono text-xs text-muted-foreground">{koFiUrl}</span>
-            </div>
-            <div className="border border-border bg-[#f9f9f9] p-1 dark:bg-background">
-              <iframe
-                id="kofiframe"
-                src="https://ko-fi.com/noteasybeingwheezy/?hidefeed=true&widget=true&embed=true&preview=true"
-                style={{ border: "none", width: "100%", padding: 4, background: "#f9f9f9" }}
-                height="712"
-                title="noteasybeingwheezy"
-                loading="lazy"
-              />
-            </div>
-          </>
+          <div className="border border-border bg-[#f9f9f9] p-1 dark:bg-background">
+            <iframe
+              id="kofiframe"
+              src="https://ko-fi.com/noteasybeingwheezy/?hidefeed=true&widget=true&embed=true&preview=true"
+              style={{ border: "none", width: "100%", padding: 4, background: "#f9f9f9" }}
+              height="712"
+              title="noteasybeingwheezy"
+              loading="lazy"
+            />
+          </div>
         ) : (
           <p className="border-t border-border pt-6 text-sm text-muted-foreground">
             Support details will be added here once the Ko-fi page is set up. We are not currently accepting donations through this page.
