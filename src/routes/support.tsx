@@ -5,7 +5,7 @@ import { rows } from "@/lib/records";
 // Add your Ko-fi page name here — the part after ko-fi.com/.
 // For example: "salvatore" becomes https://ko-fi.com/salvatore
 // Leave it empty ("" ) to show the "coming soon" note instead.
-const KO_FI_USERNAME = "";
+const KO_FI_USERNAME = "noteasybeingwheezy";
 
 const koFiUrl = KO_FI_USERNAME ? `https://ko-fi.com/${KO_FI_USERNAME}` : "";
 const koFiShopUrl = KO_FI_USERNAME ? `https://ko-fi.com/${KO_FI_USERNAME}/shop` : "";
