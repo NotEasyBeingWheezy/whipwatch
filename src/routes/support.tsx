@@ -8,7 +8,6 @@ import { rows } from "@/lib/records";
 const KO_FI_USERNAME = "noteasybeingwheezy";
 
 const koFiUrl = KO_FI_USERNAME ? `https://ko-fi.com/${KO_FI_USERNAME}` : "";
-const koFiShopUrl = KO_FI_USERNAME ? `https://ko-fi.com/${KO_FI_USERNAME}/shop` : "";
 
 export const Route = createFileRoute("/support")({
   head: () => ({
