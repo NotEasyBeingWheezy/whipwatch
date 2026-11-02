@@ -39,13 +39,16 @@ function Support() {
             Every record is checked against Parliament career pages and news reports before it goes in.
           </p>
           <dl className="mt-8 grid grid-cols-2 gap-6 sm:grid-cols-3 max-w-2xl">
-            {([["Total", rows.length], ["Withdrawn", rows.filter((r) => r.whip === "Withdrawn").length], ["Resigned", rows.filter((r) => r.whip === "Resigned").length]] as const).map(([label, count]) => (
+            {([["All records", rows.length], ["Withdrawn", rows.filter((r) => r.whip === "Withdrawn").length], ["Resigned", rows.filter((r) => r.whip === "Resigned").length]] as const).map(([label, count]) => (
               <div key={label} className="border-l-2 border-border pl-4">
                 <dd className="font-display text-4xl text-primary">{count}</dd>
                 <dt className="mt-1 font-mono text-xs uppercase text-muted-foreground">{label}</dt>
               </div>
             ))}
           </dl>
+          <p className="mt-4 max-w-2xl font-mono text-xs text-muted-foreground">
+            "All records" counts every entry, including ones without a confirmed whip outcome, so it is larger than the recorded whip losses.
+          </p>
         </div>
       </header>
 
