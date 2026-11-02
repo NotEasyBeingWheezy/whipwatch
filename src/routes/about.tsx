@@ -128,6 +128,19 @@ function About() {
           </p>
         </div>
 
+        <div className="space-y-4">
+          <h2 className="font-display text-2xl">Checking today's parties</h2>
+          <p className="text-muted-foreground">
+            For the current position, Parliament's{" "}
+            <a href="https://members.parliament.uk/parties/commons" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-4">
+              State of the Parties page
+            </a>{" "}
+            lists every sitting MP by party. MPs who have lost the whip — through withdrawal, suspension
+            or resignation — appear there as Independent, which is a useful way to cross-check the
+            recent entries in the table.
+          </p>
+        </div>
+
       </section>
     </main>
   );
