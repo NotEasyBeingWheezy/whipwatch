@@ -113,7 +113,7 @@ function About() {
             These ten additional entries cover 1902–1972 and are provisional, potentially incomplete records
             of changes of allegiance, not necessarily confirmed whip suspensions or resignations. Their
             unspecified whip outcomes are not included in the Withdrawn or Resigned totals, but they are
-            included in the Total count. Entries already in the main list have not been added again.
+            included in the All records count, which is why it is larger than the recorded whip losses. Entries already in the main list have not been added again.
           </p>
           <p className="text-muted-foreground">
             The notes column summarises each entry rather than quoting it in full, so for the detail behind
