@@ -67,13 +67,16 @@ function Index() {
             Every MP who had the party whip withdrawn, suspended or who resigned it.
           </p>
           <dl className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-6 max-w-2xl">
-            {[["Total", rows.length], ["Withdrawn", withdrawn], ["Resigned", resigned]].map(([l, n]) => (
+            {[["All records", rows.length], ["Withdrawn", withdrawn], ["Resigned", resigned]].map(([l, n]) => (
               <div key={l} className="border-l-2 border-border pl-4">
                 <dd className="font-display text-4xl text-primary">{n}</dd>
                 <dt className="mt-1 font-mono text-xs uppercase text-muted-foreground">{l}</dt>
               </div>
             ))}
           </dl>
+          <p className="mt-4 max-w-2xl font-mono text-xs text-muted-foreground">
+            "All records" counts every entry, including ones without a confirmed whip outcome, so it is larger than the recorded whip losses.
+          </p>
         </div>
       </header>
 

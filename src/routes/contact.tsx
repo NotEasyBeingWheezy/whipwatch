@@ -23,8 +23,11 @@ function Contact() {
         <h1 className="mt-3 font-display text-6xl leading-none md:text-8xl">WhipWatch</h1>
         <p className="mt-4 max-w-xl text-muted-foreground">Help improve the accuracy of the parliamentary whip records.</p>
         <dl className="mt-8 grid grid-cols-2 gap-6 sm:grid-cols-3 max-w-2xl">
-          {([["Total", rows.length], ["Withdrawn", rows.filter((r) => r.whip === "Withdrawn").length], ["Resigned", rows.filter((r) => r.whip === "Resigned").length]] as const).map(([label, count]) => <div key={label} className="border-l-2 border-border pl-4"><dd className="font-display text-4xl text-primary">{count}</dd><dt className="mt-1 font-mono text-xs uppercase text-muted-foreground">{label}</dt></div>)}
+          {([["All records", rows.length], ["Withdrawn", rows.filter((r) => r.whip === "Withdrawn").length], ["Resigned", rows.filter((r) => r.whip === "Resigned").length]] as const).map(([label, count]) => <div key={label} className="border-l-2 border-border pl-4"><dd className="font-display text-4xl text-primary">{count}</dd><dt className="mt-1 font-mono text-xs uppercase text-muted-foreground">{label}</dt></div>)}
         </dl>
+        <p className="mt-4 max-w-2xl font-mono text-xs text-muted-foreground">
+          "All records" counts every entry, including ones without a confirmed whip outcome, so it is larger than the recorded whip losses.
+        </p>
       </div>
     </header>
     <section className="mx-auto max-w-3xl space-y-6 px-6 py-10">
