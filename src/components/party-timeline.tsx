@@ -22,7 +22,7 @@ export function governmentAreas(start: number, end: number) {
 // ReferenceArea uses category centres on line charts, leaving gaps and
 // zero-width single-category runs. Draw the bands using equal category cells
 // across the supplied plot bounds instead, for both bars and lines.
-export function parliamentGovernmentAreas(labels: string[], tokens: (string | undefined)[]) {
+export function parliamentGovernmentAreas(labels: string[], tokens: (string | undefined)[], chartType: "bars" | "lines" = "bars") {
   // Merge consecutive parliaments under the same government into one band,
   // so long stretches (e.g. 1979–1997 Conservative) render as a single area.
   const areas: ReactNode[] = [];
@@ -36,8 +36,11 @@ export function parliamentGovernmentAreas(labels: string[], tokens: (string | un
       areas.push(<ReferenceArea key={`${token}-${runStart}`}
         shape={({ x, y, width, height }: ReferenceAreaProps) => {
           if (typeof x !== "number" || typeof width !== "number") return <g />;
-          const left = x + width * start / labels.length;
-          const right = x + width * end / labels.length;
+          const boundary = (index: number) => chartType === "lines" && labels.length > 1
+            ? Math.max(0, Math.min(1, (index - 0.5) / (labels.length - 1)))
+            : index / labels.length;
+          const left = x + width * boundary(start);
+          const right = x + width * boundary(end);
           return <rect className="recharts-reference-area-rect" x={left} y={y}
             width={right - left} height={height} fill={`var(--${token})`}
             fillOpacity={0.85} stroke="none" />;

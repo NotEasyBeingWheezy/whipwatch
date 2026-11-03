@@ -204,14 +204,14 @@ function Insights() {
       <div className="mt-5 min-w-0" role="region" aria-label={`Whip losses ${view === "party" ? "by party" : "by outcome"} ${chartType === "bars" ? "bar" : "line"} chart`} tabIndex={0}>
         {byParliament ? <ChartContainer config={chartConfig} className="h-80 w-full min-w-0 aspect-auto sm:h-96">
           {chartType === "bars" ? <BarChart data={barData} accessibilityLayer margin={parliamentMargin}>
-            {parliamentGovernmentAreas(parliamentLabels, parliamentTokens)}
+            {parliamentGovernmentAreas(parliamentLabels, parliamentTokens, chartType)}
             <CartesianGrid vertical={false} stroke="var(--border)" />
             {parliamentAxis}
             <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
             <ChartTooltip content={<BarTooltip config={chartConfig} />} />
             {keys.map((key) => <Bar key={key} dataKey={key} stackId="events" fill={color(key)} className="cursor-pointer" onClick={(entry) => openRecords(entry.payload?.label)} isAnimationActive={false} />)}
           </BarChart> : <LineChart data={view === "party" ? data.partyParliaments : data.parliaments} accessibilityLayer margin={parliamentMargin}>
-            {parliamentGovernmentAreas(parliamentLabels, parliamentTokens)}
+            {parliamentGovernmentAreas(parliamentLabels, parliamentTokens, chartType)}
             <CartesianGrid vertical={false} stroke="var(--border)" />
             {parliamentAxis}
             <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
