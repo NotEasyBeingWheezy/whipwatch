@@ -1,5 +1,5 @@
 import { type ReactNode } from "react";
-import { ReferenceArea } from "recharts";
+import { ReferenceArea, type ReferenceAreaProps } from "recharts";
 import { type ChartConfig } from "@/components/ui/chart";
 import { buildInsights, partyColor, partyColorTokens } from "@/lib/insights";
 import { chartDate, governmentPeriods } from "@/lib/government-periods";
@@ -19,10 +19,10 @@ export function governmentAreas(start: number, end: number) {
   });
 }
 
-// One shaded band per parliament category. Inner edges sit on neighbouring
-// categories; outer edges clamp numerically to the chart boundary. The band
-// colours are translucent, so the slight overlap at boundaries stays subtle.
-export function parliamentGovernmentAreas(labels: string[], tokens: (string | undefined)[]) {
+// ReferenceArea uses category centres on line charts, leaving gaps and
+// zero-width single-category runs. Draw the bands using equal category cells
+// across the supplied plot bounds instead, for both bars and lines.
+export function parliamentGovernmentAreas(labels: string[], tokens: (string | undefined)[], chartType: "bars" | "lines" = "bars") {
   // Merge consecutive parliaments under the same government into one band,
   // so long stretches (e.g. 1979–1997 Conservative) render as a single area.
   const areas: ReactNode[] = [];
@@ -31,10 +31,20 @@ export function parliamentGovernmentAreas(labels: string[], tokens: (string | un
     if (i < labels.length && tokens[i] === tokens[runStart]) continue;
     const token = tokens[runStart];
     if (token) {
-      // Category axes only render label coordinates, so use the run's own
-      // first/last labels (numeric clamps like -0.5 render nothing).
+      const start = runStart;
+      const end = i;
       areas.push(<ReferenceArea key={`${token}-${runStart}`}
-        x1={labels[runStart]!} x2={labels[i - 1]!}
+        shape={({ x, y, width, height }: ReferenceAreaProps) => {
+          if (typeof x !== "number" || typeof width !== "number") return <g />;
+          const boundary = (index: number) => chartType === "lines" && labels.length > 1
+            ? Math.max(0, Math.min(1, (index - 0.5) / (labels.length - 1)))
+            : index / labels.length;
+          const left = x + width * boundary(start);
+          const right = x + width * boundary(end);
+          return <rect className="recharts-reference-area-rect" x={left} y={y}
+            width={right - left} height={height} fill={`var(--${token})`}
+            fillOpacity={0.85} stroke="none" />;
+        }}
         fill={`var(--${token})`} fillOpacity={0.85} stroke="none" />);
     }
     runStart = i;
