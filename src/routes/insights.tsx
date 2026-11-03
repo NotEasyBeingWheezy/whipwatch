@@ -6,7 +6,7 @@ import { SiteNav } from "@/components/site-nav";
 import { OutcomeNote } from "@/components/outcome-note";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
-import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
+import { ChartContainer, ChartTooltip, type ChartConfig } from "@/components/ui/chart";
 import { buildInsights, parliamentGovernment, type InsightGroup } from "@/lib/insights";
 import { GovernmentLegend, governmentAreas, parliamentGovernmentAreas, partyChartConfig } from "@/components/party-timeline";
 import { chartRecordFilters } from "@/lib/record-filters";
@@ -77,13 +77,13 @@ function BarTooltip({ active, payload, config }: { active?: boolean; payload?: B
         const key = String(item.dataKey ?? "");
         return <div key={key} className="flex items-center gap-2">
           <div className="h-2.5 w-2.5 shrink-0 rounded-[2px]" style={{ backgroundColor: item.color }} />
-          <span className="text-muted-foreground">{config[key]?.label ?? key}</span>
+          <span className="min-w-0 text-muted-foreground">{config[key]?.label ?? key}</span>
           <span className="ml-auto pl-4 font-mono font-medium tabular-nums text-foreground">{item.value}</span>
         </div>;
       })}
       <div className="mt-0.5 flex items-center gap-2 border-t border-border/50 pt-1.5">
         <span className="font-medium">Total</span>
-        <span className="ml-auto pl-4 font-mono font-semibold tabular-nums text-foreground">{String(point["visibleTotal"] ?? "")}</span>
+        <span className="ml-auto pl-4 font-mono font-semibold tabular-nums text-foreground">{String(point["visibleTotal"] ?? payload.reduce((sum, item) => sum + Number(item.value ?? 0), 0))}</span>
       </div>
     </div>
   </div>;
@@ -172,8 +172,8 @@ function Insights() {
     tickFormatter={(value) => String(Math.floor(Number(value)))} tickLine={false} axisLine={false} tickMargin={10} tick={{ fontSize: 12 }} />;
   const parliamentAxis = <XAxis dataKey="label" tickLine={false} axisLine={false} interval={0} angle={isMobile ? -90 : -35} textAnchor="end" tickMargin={12} height={isMobile ? 112 : 30} tick={{ fontSize: 12 }} />;
   const parliamentMargin = { top: 16, right: isMobile ? 12 : 24, left: isMobile ? 0 : 30, bottom: isMobile ? 8 : 45 };
-  const tooltipProps = isMobile ? { position: { x: 36, y: 8 }, allowEscapeViewBox: { x: false, y: false }, wrapperStyle: { zIndex: 10 } } : {};
-  const lineTooltip = <ChartTooltipContent className="max-h-72 max-w-[calc(100vw-5rem)] overflow-y-auto text-sm sm:text-xs" labelFormatter={(_, payload) => payload[0]?.payload.label} />;
+  const tooltipProps = isMobile ? { trigger: "click" as const, position: { x: 36, y: 8 }, allowEscapeViewBox: { x: false, y: false }, wrapperStyle: { zIndex: 10 } } : {};
+  const lineTooltip = <BarTooltip config={chartConfig} />;
   const toggle = (label: string, active: boolean, onClick: () => void, icon: ReactNode, disabled = false) =>
     <Button className="min-h-11 min-w-0 px-2 sm:min-h-8 sm:px-3" size="sm" variant={active ? "default" : "outline"} onClick={onClick} aria-pressed={active} disabled={disabled}>{icon}{label}</Button>;
   const peak = data.years.reduce<InsightGroup | undefined>((best, group) => !best || group.total > best.total ? group : best, undefined);
@@ -268,7 +268,7 @@ function Insights() {
               <CartesianGrid horizontal={false} stroke="var(--border)" />
               <XAxis type="number" allowDecimals={false} tickCount={isMobile ? 3 : 5} tickLine={false} axisLine={false} />
               <YAxis dataKey="label" type="category" width={isMobile ? 112 : 130} interval={0} tickLine={false} axisLine={false} tick={isMobile ? <PhonePartyTick /> : true} />
-              <ChartTooltip {...(isMobile ? { position: { x: 112, y: 8 } } : {})} content={lineTooltip} />
+              <ChartTooltip {...tooltipProps} content={<BarTooltip config={config} />} />
               {series.map((key) => <Bar key={key} dataKey={key} stackId="events" fill={`var(--color-${key})`} isAnimationActive={false} />)}
             </BarChart>
           </ChartContainer>
