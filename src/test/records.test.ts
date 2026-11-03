@@ -48,8 +48,8 @@ describe("Source links", () => {
     expect(recent.flatMap((row) => row.sources ?? []).every((s) => s.label.length > 0 && s.url.startsWith("https://"))).toBe(true);
   });
 
-  it("provides checked citations for all 246 records, including the ten historical entries", () => {
-    expect(rows).toHaveLength(246);
+  it("provides checked citations for every record, including the ten historical entries", () => {
+    expect(rows).toHaveLength(currentRecords.length + 10);
     for (const row of rows) {
       const sources = row.sources ?? [];
       expect(sources.length, `${row.member} ${row.date}`).toBeGreaterThan(0);
