@@ -44,7 +44,7 @@ function toggleKey(list: string[], key: string) {
 function Legend({ hidden, onToggle }: { hidden: string[]; onToggle: (key: string) => void }) {
   return <div className="flex flex-wrap gap-2" role="group" aria-label="Outcome series">
     {series.map((key) => <Button key={key} variant="ghost" size="sm"
-      className={hidden.includes(key) ? "opacity-40" : ""}
+      className={`min-h-11 sm:min-h-8 ${hidden.includes(key) ? "opacity-40" : ""}`}
       aria-pressed={!hidden.includes(key)}
       onClick={() => onToggle(key)}>
       <svg width="12" height="12" aria-hidden="true"><rect width="12" height="12" fill={config[key].color} /></svg>
@@ -56,7 +56,7 @@ function Legend({ hidden, onToggle }: { hidden: string[]; onToggle: (key: string
 function PartyLegend({ hidden, onToggle }: { hidden: string[]; onToggle: (key: string) => void }) {
   return <div className="flex flex-wrap gap-2" role="group" aria-label="Party series">
     {data.partySeries.map((party) => <Button key={party.key} variant="ghost" size="sm"
-      className={hidden.includes(party.key) ? "opacity-40" : ""}
+      className={`min-h-11 max-w-full whitespace-normal text-left sm:min-h-8 ${hidden.includes(party.key) ? "opacity-40" : ""}`}
       aria-pressed={!hidden.includes(party.key)}
       onClick={() => onToggle(party.key)}>
       <svg width="12" height="12" aria-hidden="true"><rect width="12" height="12" fill={partyChartConfig[party.key]?.color} /></svg>
@@ -70,7 +70,7 @@ type BarTooltipEntry = { dataKey?: string | number; value?: number | string; col
 function BarTooltip({ active, payload, config }: { active?: boolean; payload?: BarTooltipEntry[]; config: ChartConfig }) {
   if (!active || !payload?.length) return null;
   const point = payload[0]?.payload ?? {};
-  return <div className="grid min-w-[8rem] items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl">
+  return <div className="grid max-h-72 min-w-[8rem] max-w-[calc(100vw-5rem)] items-start gap-1.5 overflow-y-auto rounded-lg border border-border/50 bg-background px-3 py-2 text-sm shadow-xl sm:text-xs">
     <div className="font-medium">{String(point["label"] ?? "")}</div>
     <div className="grid gap-1.5">
       {payload.map((item) => {
@@ -87,6 +87,20 @@ function BarTooltip({ active, payload, config }: { active?: boolean; payload?: B
       </div>
     </div>
   </div>;
+}
+
+function PhonePartyTick({ x = 0, y = 0, payload }: { x?: number; y?: number; payload?: { value: string } }) {
+  const label = payload?.value ?? "";
+  const words = label.replace("LiberalDemocrats", "Liberal Democrats").split(" ");
+  const lines: string[] = [];
+  for (const word of words) {
+    const last = lines.at(-1);
+    if (last && `${last} ${word}`.length <= 15) lines[lines.length - 1] = `${last} ${word}`;
+    else lines.push(word);
+  }
+  return <text x={x} y={y} textAnchor="end" className="fill-foreground text-xs">
+    {lines.map((line, index) => <tspan key={index} x={x} dy={index === 0 ? (lines.length > 1 ? -3 : 4) : 14}>{line}</tspan>)}
+  </text>;
 }
 
 function PartyYearTable({ rows = data.partyYears, heading = "Year" }: { rows?: { label: string }[]; heading?: string }) {
@@ -155,11 +169,13 @@ function Insights() {
   };
   const color = (key: string) => view === "party" ? partyChartConfig[key]?.color : config[key as keyof typeof config].color;
   const yearAxis = <XAxis type="number" dataKey="year" domain={[startYear, endYear]} ticks={isMobile ? yearTicks.filter((_, index) => index % 2 === 0) : yearTicks}
-    tickFormatter={(value) => String(Math.floor(Number(value)))} tickLine={false} axisLine={false} tickMargin={10} />;
-  const parliamentAxis = <XAxis dataKey="label" tickLine={false} axisLine={false} interval={0} angle={isMobile ? -65 : -35} textAnchor="end" tickMargin={10} height={isMobile ? 85 : 30} tick={isMobile ? { fontSize: 10 } : true} />;
-  const parliamentMargin = { top: 32, right: isMobile ? 16 : 24, left: isMobile ? 0 : 30, bottom: isMobile ? 5 : 45 };
+    tickFormatter={(value) => String(Math.floor(Number(value)))} tickLine={false} axisLine={false} tickMargin={10} tick={{ fontSize: 12 }} />;
+  const parliamentAxis = <XAxis dataKey="label" tickLine={false} axisLine={false} interval={0} angle={isMobile ? -90 : -35} textAnchor="end" tickMargin={12} height={isMobile ? 112 : 30} tick={{ fontSize: 12 }} />;
+  const parliamentMargin = { top: 16, right: isMobile ? 12 : 24, left: isMobile ? 0 : 30, bottom: isMobile ? 8 : 45 };
+  const tooltipProps = isMobile ? { position: { x: 36, y: 8 }, allowEscapeViewBox: { x: false, y: false }, wrapperStyle: { zIndex: 10 } } : {};
+  const lineTooltip = <ChartTooltipContent className="max-h-72 max-w-[calc(100vw-5rem)] overflow-y-auto text-sm sm:text-xs" labelFormatter={(_, payload) => payload[0]?.payload.label} />;
   const toggle = (label: string, active: boolean, onClick: () => void, icon: ReactNode, disabled = false) =>
-    <Button className="min-w-0 px-2 sm:px-3" size="sm" variant={active ? "default" : "outline"} onClick={onClick} aria-pressed={active} disabled={disabled}>{icon}{label}</Button>;
+    <Button className="min-h-11 min-w-0 px-2 sm:min-h-8 sm:px-3" size="sm" variant={active ? "default" : "outline"} onClick={onClick} aria-pressed={active} disabled={disabled}>{icon}{label}</Button>;
   const peak = data.years.reduce<InsightGroup | undefined>((best, group) => !best || group.total > best.total ? group : best, undefined);
   return <main className="min-h-screen bg-background text-foreground">
     <header className="border-b-4 border-primary">
@@ -177,7 +193,7 @@ function Insights() {
         <div className="mt-6 max-w-3xl"><OutcomeNote /></div>
       </div>
     </header>
-    <section className="mx-auto max-w-6xl px-6 py-10" aria-labelledby="timeline-title">
+    <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6" aria-labelledby="timeline-title">
       <div className="min-w-0">
         <div className="min-w-0"><h2 id="timeline-title" className="font-display text-3xl">Whip losses over time</h2><p className="mt-2 text-sm text-muted-foreground">{peak?.label} has the most recorded events: <strong className="text-foreground">{peak?.total}</strong>. Coverage may be incomplete; {data.years.at(-1)?.label} runs to 20 October.</p></div>
       </div>
@@ -202,21 +218,21 @@ function Insights() {
         ? <PartyLegend hidden={hiddenParties} onToggle={(key) => setHiddenParties((previous) => toggleKey(previous, key))} />
         : <Legend hidden={hiddenOutcomes} onToggle={(key) => setHiddenOutcomes((previous) => toggleKey(previous, key))} />}</div>
       <div className="mt-5 min-w-0" role="region" aria-label={`Whip losses ${view === "party" ? "by party" : "by outcome"} ${chartType === "bars" ? "bar" : "line"} chart`} tabIndex={0}>
-        {byParliament ? <ChartContainer config={chartConfig} className="h-80 w-full min-w-0 aspect-auto sm:h-96">
+        {byParliament ? <ChartContainer config={chartConfig} className="h-[400px] w-full min-w-0 aspect-auto sm:h-96">
           {chartType === "bars" ? <BarChart data={barData} accessibilityLayer margin={parliamentMargin}>
             {parliamentGovernmentAreas(parliamentLabels, parliamentTokens, chartType)}
             <CartesianGrid vertical={false} stroke="var(--border)" />
             {parliamentAxis}
             <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
-            <ChartTooltip content={<BarTooltip config={chartConfig} />} />
+            <ChartTooltip {...tooltipProps} content={<BarTooltip config={chartConfig} />} />
             {keys.map((key) => <Bar key={key} dataKey={key} stackId="events" fill={color(key)} className="cursor-pointer" onClick={(entry) => openRecords(entry.payload?.label)} isAnimationActive={false} />)}
           </BarChart> : <LineChart data={view === "party" ? data.partyParliaments : data.parliaments} accessibilityLayer margin={parliamentMargin}>
             {parliamentGovernmentAreas(parliamentLabels, parliamentTokens, chartType)}
             <CartesianGrid vertical={false} stroke="var(--border)" />
             {parliamentAxis}
             <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
-            <ChartTooltip content={<ChartTooltipContent labelFormatter={(_, payload) => payload[0]?.payload.label} />} />
-            {keys.map((key) => <Line key={key} dataKey={key} type="linear" stroke={color(key)} strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} isAnimationActive={false} />)}
+            <ChartTooltip {...tooltipProps} content={lineTooltip} />
+            {keys.map((key) => <Line key={key} dataKey={key} type="linear" stroke={color(key)} strokeWidth={isMobile ? 2.5 : 2} dot={{ r: isMobile ? 2.5 : 3 }} activeDot={{ r: 5 }} isAnimationActive={false} />)}
           </LineChart>}
         </ChartContainer> : <ChartContainer config={chartConfig} className="h-80 w-full min-w-0 aspect-auto sm:h-96">
           {chartType === "bars" ? <BarChart data={barData} accessibilityLayer margin={{ top: 8, right: 12, left: 0, bottom: 15 }}>
@@ -224,15 +240,15 @@ function Insights() {
             <CartesianGrid vertical={false} stroke="var(--border)" />
             {yearAxis}
             <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
-            <ChartTooltip content={<BarTooltip config={chartConfig} />} />
+            <ChartTooltip {...tooltipProps} content={<BarTooltip config={chartConfig} />} />
             {keys.map((key) => <Bar key={key} dataKey={key} stackId="events" {...(isMobile ? {} : { barSize: 13 })} fill={color(key)} className="cursor-pointer" onClick={(entry) => openRecords(entry.payload?.label)} isAnimationActive={false} />)}
           </BarChart> : <LineChart data={chartData} accessibilityLayer margin={{ top: 16, right: 12, left: 0, bottom: 15 }}>
             {governmentAreas(startYear, endYear)}
             <CartesianGrid vertical={false} stroke="var(--border)" />
             {yearAxis}
             <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
-            <ChartTooltip content={<ChartTooltipContent labelFormatter={(_, payload) => payload[0]?.payload.label} />} />
-            {keys.map((key) => <Line key={key} dataKey={key} type="linear" stroke={color(key)} strokeWidth={2} dot={false} activeDot={{ r: 4 }} isAnimationActive={false} />)}
+            <ChartTooltip {...tooltipProps} content={lineTooltip} />
+            {keys.map((key) => <Line key={key} dataKey={key} type="linear" stroke={color(key)} strokeWidth={isMobile ? 2.5 : 2} dot={false} activeDot={{ r: 4 }} isAnimationActive={false} />)}
           </LineChart>}
         </ChartContainer>}
       </div>
@@ -242,17 +258,17 @@ function Insights() {
       {showTable && <div id="timeline-data" className="mt-4">{view === "party" ? <PartyYearTable rows={byParliament ? data.partyParliaments : data.partyYears} heading={byParliament ? "Parliament" : "Year"} /> : <CountsTable groups={byParliament ? data.parliaments : data.years} heading={byParliament ? "Parliament" : "Year"} />}</div>}
     </section>
     <section className="border-t border-border" aria-labelledby="party-title">
-      <div className="mx-auto max-w-6xl px-6 py-10">
+      <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
         <h2 id="party-title" className="font-display text-3xl">Totals by party</h2>
         <p className="mt-2 max-w-2xl text-sm text-muted-foreground">Attributed to the party before each event. Source categories are kept separate, including Labour and Labour (Co-op). Unspecified outcomes are not counted as whip losses.</p>
         <div className="mt-6"><Legend hidden={[]} onToggle={() => {}} /></div>
-        <div className="mt-5 overflow-x-auto" role="region" aria-label="Whip losses by party chart" tabIndex={0}>
-          <ChartContainer config={config} className="h-[520px] w-full min-w-[600px] aspect-auto">
-            <BarChart data={data.parties.filter((party) => party.total > 0)} layout="vertical" accessibilityLayer margin={{ left: 0, right: 24, top: 8, bottom: 8 }}>
+        <div className="mt-5 min-w-0" role="region" aria-label="Whip losses by party chart" tabIndex={0}>
+          <ChartContainer config={config} className="h-[620px] w-full min-w-0 aspect-auto sm:h-[520px]">
+            <BarChart data={data.parties.filter((party) => party.total > 0)} layout="vertical" accessibilityLayer margin={{ left: 0, right: isMobile ? 12 : 24, top: 8, bottom: 8 }}>
               <CartesianGrid horizontal={false} stroke="var(--border)" />
-              <XAxis type="number" allowDecimals={false} tickLine={false} axisLine={false} />
-              <YAxis dataKey="label" type="category" width={130} tickLine={false} axisLine={false} />
-              <ChartTooltip content={<ChartTooltipContent labelFormatter={(_, payload) => payload[0]?.payload.label} />} />
+              <XAxis type="number" allowDecimals={false} tickCount={isMobile ? 3 : 5} tickLine={false} axisLine={false} />
+              <YAxis dataKey="label" type="category" width={isMobile ? 112 : 130} interval={0} tickLine={false} axisLine={false} tick={isMobile ? <PhonePartyTick /> : true} />
+              <ChartTooltip {...(isMobile ? { position: { x: 112, y: 8 } } : {})} content={lineTooltip} />
               {series.map((key) => <Bar key={key} dataKey={key} stackId="events" fill={`var(--color-${key})`} isAnimationActive={false} />)}
             </BarChart>
           </ChartContainer>
